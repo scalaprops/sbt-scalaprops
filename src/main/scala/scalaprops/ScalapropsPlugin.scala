@@ -21,8 +21,8 @@ object ScalapropsPlugin extends AutoPlugin {
     val scalapropsCoreSettings: Seq[Setting[_]] = Seq(
       scalapropsTestNames := {
         val loader = (testLoader in Test).value
-        val runnnerName = "scalaprops.ScalapropsRunner"
-        getSingletonInstance(runnnerName, loader) match {
+        val runnerName = "scalaprops.ScalapropsRunner"
+        getSingletonInstance(runnerName, loader) match {
           case Right(clazz) =>
             val instance = clazz.getField("MODULE$").get(null)
             val method = clazz.getMethod("testFieldNames", classOf[Class[_]])
@@ -33,7 +33,7 @@ object ScalapropsPlugin extends AutoPlugin {
               testName -> testFields.toSet
             }(collection.breakOut)
           case Left(e) =>
-            streams.value.log.debug(runnnerName + " could not found")
+            streams.value.log.debug(runnerName + " could not found")
             Map.empty
         }
       },
