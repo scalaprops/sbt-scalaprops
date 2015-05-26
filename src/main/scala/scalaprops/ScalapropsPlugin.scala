@@ -26,7 +26,7 @@ object ScalapropsPlugin extends AutoPlugin {
           case Right(clazz) =>
             val instance = clazz.getField("MODULE$").get(null)
             val method = clazz.getMethod("testFieldNames", classOf[Class[_]])
-            val testNames = (definedTestNames in Test).value.toArray
+            val testNames = (definedTestNames in Test).value
             testNames.map { testName =>
               val testClass = Class.forName(testName, true, loader)
               val testFields = method.invoke(instance, testClass).asInstanceOf[Array[String]]
