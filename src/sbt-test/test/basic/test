@@ -1,0 +1,34 @@
+> show scalapropsVersion
+> checkParallelExecution
+
+> + test:compile
+> + test
+$ exists test1.txt
+$ exists test2.txt
+$ exists test3.txt
+
+$ delete test1.txt
+$ delete test2.txt
+$ delete test3.txt
+
+-$ exists test1.txt
+-$ exists test2.txt
+-$ exists test3.txt
+
+> scalapropsOnly com.example.Test1 test1 "test 3"
+-$ exists test2.txt
+
+$ exists test1.txt
+$ delete test1.txt
+-$ exists test1.txt
+
+$ exists test3.txt
+$ delete test3.txt
+-$ exists test3.txt
+
+> scalapropsOnly com.example.Test1 aaa
+-$ exists test1.txt
+-$ exists test2.txt
+-$ exists test3.txt
+
+> testOnly com.example.Test1 -- invalid_argument
