@@ -33,3 +33,6 @@ scalapropsVersion := "0.1.6"
 
 
 - [API Documentation](https://oss.sonatype.org/service/local/repositories/releases/archive/com/github/scalaprops/sbt-scalaprops_2.10_0.13/0.1.0/sbt-scalaprops-0.1.0-javadoc.jar/!/index.html)
+
+
+![screencast](https://raw.githubusercontent.com/scalaprops/sbt-scalaprops/master/screencast.gif)
