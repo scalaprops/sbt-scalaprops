@@ -21,7 +21,7 @@ object build extends Build {
     ),
     ScriptedPlugin.scriptedLaunchOpts ++= Seq(
       "-Dplugin.version=" + version.value,
-      "-Dscalaprops.version=0.1.9"
+      "-Dscalaprops.version=0.1.10"
     ),
     startYear := Some(2015),
     organization := "com.github.scalaprops",
