@@ -20,7 +20,7 @@ addSbtPlugin("com.github.scalaprops" % "sbt-scalaprops" % "0.1.0")
 ```scala
 scalapropsSettings
 
-scalapropsVersion := "0.1.14"
+scalapropsVersion := "0.1.15"
 ```
 
 or
@@ -28,7 +28,7 @@ or
 ```scala
 scalapropsWithScalazlaws
 
-scalapropsVersion := "0.1.14"
+scalapropsVersion := "0.1.15"
 ```
 
 
