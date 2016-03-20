@@ -40,6 +40,8 @@ object ScalapropsPlugin extends AutoPlugin {
       scalapropsTestNames <<= {
         scalapropsTestNames storeAs scalapropsTestNames triggeredBy (compile in Test)
       },
+      testFrameworks += new TestFramework("scalaprops.ScalapropsFramework"),
+      parallelExecution in Test := false,
       scalapropsOnly <<= InputTask.createDyn(
         Defaults.loadForParser(scalapropsTestNames)(
           (state, classes) => classes.fold(defaultParser)(createParser)
@@ -52,9 +54,7 @@ object ScalapropsPlugin extends AutoPlugin {
     )
 
     val scalapropsSettings: Seq[Setting[_]] = scalapropsCoreSettings ++ Seq(
-      testFrameworks += new TestFramework("scalaprops.ScalapropsFramework"),
-      libraryDependencies += "com.github.scalaprops" %% "scalaprops" % scalapropsVersion.value % "test",
-      parallelExecution in Test := false
+      libraryDependencies += "com.github.scalaprops" %% "scalaprops" % scalapropsVersion.value % "test"
     )
 
     val scalapropsWithScalazlaws: Seq[Setting[_]] = scalapropsSettings ++ Seq(
