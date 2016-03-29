@@ -15,6 +15,8 @@ __powerful__ means not only test class names but also test method names.
 addSbtPlugin("com.github.scalaprops" % "sbt-scalaprops" % "0.1.1")
 ```
 
+#### JVM
+
 `build.sbt`
 
 ```scala
@@ -29,6 +31,24 @@ or
 scalapropsWithScalazlaws
 
 scalapropsVersion := "0.3.0"
+```
+
+#### Scala.js
+
+`build.sbt`
+
+```scala
+scalapropsCoreSettings
+
+libraryDependencies += "com.github.scalaprops" %%% "scalaprops" % "0.3.0" % "test"
+```
+
+or
+
+```scala
+scalapropsCoreSettings
+
+libraryDependencies += "com.github.scalaprops" %%% "scalaprops-scalazlaws" % "0.3.0" % "test"
 ```
 
 
