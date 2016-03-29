@@ -48,7 +48,10 @@ or
 ```scala
 scalapropsCoreSettings
 
-libraryDependencies += "com.github.scalaprops" %%% "scalaprops-scalazlaws" % "0.3.0" % "test"
+val scalapropsVersion = "0.3.0"
+
+libraryDependencies += "com.github.scalaprops" %%% "scalaprops" % scalapropsVersion % "test"
+libraryDependencies += "com.github.scalaprops" %%% "scalaprops-scalazlaws" % scalapropsVersion % "test"
 ```
 
 
