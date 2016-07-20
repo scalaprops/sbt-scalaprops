@@ -8,10 +8,10 @@ import scala.reflect.NameTransformer
 
 object ScalapropsPlugin extends AutoPlugin {
 
-  private[this] val defaultParser: Parser[ScalapropsTest] = (
-    Space ~> token(StringBasic, _ => true) ~
-    (Space ~> token(StringBasic, _ => true)).*
-  ).map(ScalapropsTest.tupled)
+  private[this] val defaultParser: Parser[ScalapropsTest] = {
+    val freeTestNames = Space ~> token(StringBasic, _ => true) ~ (Space ~> token(StringBasic, _ => true)).*
+    createScalaprosParser(freeTestNames)
+  }
 
   object autoImport {
     val scalapropsTestNames = TaskKey[Map[String, Set[String]]]("scalapropsTestNames")
@@ -48,7 +48,11 @@ object ScalapropsPlugin extends AutoPlugin {
         )
       ) {
         Def.task { test =>
-          (testOnly in Test).toTask((" " :: test.className :: "--" :: "--only" :: test.methodNames.toList).mkString(" "))
+          // https://github.com/scalaprops/scalaprops/blob/v0.3.0/scalaprops/src/main/scala/scalaprops/Arguments.scala#L17
+          val duration = test.showDuration.fold(List.empty[String])(n => "--showDuration" :: n.toString :: Nil)
+          (testOnly in Test).toTask(
+            (" " :: test.className :: "--" :: "--only" :: test.methodNames.toList ::: duration).mkString(" ")
+          )
         }
       }
     )
@@ -62,14 +66,24 @@ object ScalapropsPlugin extends AutoPlugin {
     )
   }
 
-  final case class ScalapropsTest(className: String, methodNames: Seq[String])
+  final case class ScalapropsTest(className: String, methodNames: Seq[String], showDuration: Option[Int])
+
+  private[this] def createScalaprosParser(testNames: Parser[(String, Seq[String])]): Parser[ScalapropsTest] = {
+    val showDuration = token("--showDuration") ~> Space ~> (NatBasic !!! "please input unsigned integer value")
+    (testNames || showDuration).*.map { args =>
+      val duration = args.reverseIterator.collectFirst { case Right(n) => n }
+      val (clazz, name) = args.reverseIterator.collectFirst {
+        case Left((c, n)) => c -> n
+      }.getOrElse(Parser.failure("please specify test class name"))
+      ScalapropsTest(clazz, name, duration)
+    }
+  }
 
   private[this] def createParser(tests: Map[String, Set[String]]): Parser[ScalapropsTest] = {
     tests.filter(_._2.nonEmpty).map { case (k, v) =>
       val (noChange, changed) = v.partition(n => NameTransformer.decode(n) == n)
       val all = noChange ++ changed.map(n => "\"" + NameTransformer.decode(n) + "\"")
-      val parser = token(k) ~ distinctParser(all)
-      parser.map(ScalapropsTest.tupled)
+      createScalaprosParser(token(k) ~ distinctParser(all))
     }.reduceOption(_ | _).map(Space ~> _).getOrElse(defaultParser)
   }
 
