@@ -21,7 +21,7 @@ ScriptedPlugin.scriptedLaunchOpts ++= sys.process.javaVmArguments.filter(
 
 ScriptedPlugin.scriptedLaunchOpts ++= Seq(
   "-Dplugin.version=" + version.value,
-  "-Dscalaprops.version=0.3.2"
+  "-Dscalaprops.version=0.3.3"
 )
 
 startYear := Some(2015)
