@@ -38,6 +38,8 @@ object ScalapropsPlugin extends AutoPlugin {
         }
       },
       scalapropsTestNames <<= {
+        // can't use := and .value
+        // https://github.com/sbt/sbt/issues/1444
         scalapropsTestNames storeAs scalapropsTestNames triggeredBy (compile in Test)
       },
       testFrameworks += new TestFramework("scalaprops.ScalapropsFramework"),
