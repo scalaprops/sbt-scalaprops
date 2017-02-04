@@ -22,13 +22,15 @@ object ScalapropsPluginTest extends Scalaprops {
     )
     val p = invokeParser(classes)
 
+    def show(s: Set[String]) = s.map("\"" + _ + "\"").toList.sorted
+
     def test(input: String, completions: Set[String]) = {
       val actual = input.foldLeft(p){_ derive _}.completions(0).get.map(_.display)
-      assert(actual == completions, s"$actual $completions")
+      assert(actual == completions, s"\n${show(actual)}\n is not equals \n${show(completions)}")
     }
 
     val aaaMethods = classes(aaa)
-    val keys = Set("minSize", "maxDiscarded", "maxSize", "timeout", "minSuccessful", "seed").map(" --" + _)
+    val keys = Set("minSize", "maxDiscarded", "maxSize", "timeout", "minSuccessful", "seed").map("--" + _ + "=")
 
     test("", Set(" "))
     test(" ", classes.keySet)
@@ -42,6 +44,11 @@ object ScalapropsPluginTest extends Scalaprops {
     test(" com.example.AAA aa_x", Set("aa_xx_1", "aa_xx_2"))
     test(" com.example.AAA aa_xx_1", Set(" ", ""))
     test(" com.example.AAA aa_xx_1 ", Set("aa_xx_2", "aa_yy") ++ keys)
+    test(" com.example.AAA --max", Set("--maxDiscarded=", "--maxSize="))
+    test(" com.example.AAA --seed", Set("--seed="))
+    test(" com.example.AAA --seed=", Set("<seed>"))
+    test(" com.example.AAA --seed=12345", Set("<seed>"))
+    test(" com.example.AAA --seed=12345 ", keys ++ aaaMethods)
     true
   }
 }

@@ -17,9 +17,9 @@ object ScalapropsPlugin extends AutoPlugin {
 
   private[this] def param[A](p: Parser[A]): (String, (ScalapropsTest.Param, A) => ScalapropsTest.Param) => Parser[ScalapropsTest.Param] = {
     (key, f) =>
-      token(token(Space) ~> token("--" + key) ~> token(Space) ~> token(p, s"<${key}>").map { x =>
+      Space ~> token(("--" + key + "=") ~> token(p, s"<${key}>")).map { x =>
         f(ScalapropsTest.Param.Default, x)
-      })
+      }
   }
   private[this] val long = param(LongBasic)
   private[this] val uint = param(DefaultParsers.NatBasic)
