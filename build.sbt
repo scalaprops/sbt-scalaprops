@@ -1,7 +1,6 @@
 import sbtrelease._
 import ReleaseStateTransformations._
 import com.typesafe.sbt.pgp.PgpKeys
-import xerial.sbt.Sonatype.SonatypeKeys
 
 scalapropsSettings
 
@@ -10,8 +9,6 @@ scalapropsVersion := "0.3.6"
 def gitHash = scala.util.Try(
   sys.process.Process("git rev-parse HEAD").lines_!.head
 ).getOrElse("master")
-
-xerial.sbt.Sonatype.sonatypeRootSettings
 
 ScriptedPlugin.scriptedSettings
 
@@ -94,19 +91,10 @@ releaseProcess := Seq[ReleaseStep](
   commitReleaseVersion,
   UpdateReadme.updateReadmeProcess,
   tagRelease,
-  ReleaseStep(
-    action = { state =>
-      val extracted = Project extract state
-      extracted.runAggregated(PgpKeys.publishSigned in Global in extracted.get(thisProjectRef), state)
-    },
-    enableCrossBuild = true
-  ),
+  releaseStepTask(PgpKeys.publishSigned),
   setNextVersion,
   commitNextVersion,
-  ReleaseStep{ state =>
-    val extracted = Project extract state
-    extracted.runAggregated(SonatypeKeys.sonatypeReleaseAll in Global in extracted.get(thisProjectRef), state)
-  },
+  ReleaseStep(action = Command.process("sonatypeReleaseAll", _)),
   UpdateReadme.updateReadmeProcess,
   pushChanges
 )
