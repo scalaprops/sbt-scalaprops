@@ -15,11 +15,16 @@ object ScalapropsPlugin extends AutoPlugin {
       (neg.toSeq ++ digits).mkString.toLong
   }
 
-  private[this] def param[A](p: Parser[A], typeName: String): (String, (ScalapropsTest.Param, A) => ScalapropsTest.Param) => Parser[ScalapropsTest.Param] = {
+  private[this] final case class Arg(name: String, parser: Parser[ScalapropsTest.Param]) {
+    def asTuple = (name, parser)
+  }
+
+  private[this] def param[A](p: Parser[A], typeName: String): (String, (ScalapropsTest.Param, A) => ScalapropsTest.Param) => Arg = {
     (key, f) =>
-      Space ~> token(("--" + key + "=") ~> token(p, s"<${key}: ${typeName}>")).map { x =>
+      val result = Space ~> token(("--" + key + "=") ~> token(p, s"<${key}: ${typeName}>")).map { x =>
         f(ScalapropsTest.Param.Default, x)
       }
+      Arg(key, result)
   }
   private[this] val long = param(LongBasic, "Long")
   private[this] val uint = param(DefaultParsers.NatBasic, "Unsigned Int")
@@ -37,8 +42,8 @@ object ScalapropsPlugin extends AutoPlugin {
   private[this] val Timeout =
     uint("timeout", (p, x) => p.copy(timeout = Some(x)))
 
-  private[this] def params(xs: Parser[ScalapropsTest.Param]*): Parser[ScalapropsTest.Param] =
-    Parser.oneOf(xs).*.map(
+  private[this] def params(xs: Arg*): Parser[ScalapropsTest.Param] =
+    distinctParser(xs.map(_.asTuple).toMap).map(
       params => params.foldLeft(ScalapropsTest.Param.Default)(_ merge _)
     )
 
@@ -142,7 +147,7 @@ object ScalapropsPlugin extends AutoPlugin {
     tests.filter(_._2.nonEmpty).map { case (k, v) =>
       val (noChange, changed) = v.partition(n => NameTransformer.decode(n) == n)
       val all = noChange ++ changed.map(n => "\"" + NameTransformer.decode(n) + "\"")
-      val parser = token(k) ~ distinctParser(all) ~ ParamsParser
+      val parser = token(k) ~ distinctParserString(all) ~ ParamsParser
       val ~ = Tuple2
       parser.map{
         case className ~ methodName ~ param =>
@@ -159,11 +164,22 @@ object ScalapropsPlugin extends AutoPlugin {
         Left(e)
     }
 
-  private[this] def distinctParser(exs: Set[String]): Parser[Seq[String]] = {
+  private[this] def distinctParser[A](map: Map[String, Parser[A]]): Parser[Seq[A]] = {
+    val exs = map.map{case (k, v) =>
+      v.map(k -> _)
+    }.toSeq
+    val base = token(Space) ~> token(Parser.oneOf(exs))
+    base.flatMap { case (key, ex) =>
+      val notMatching = map.filterNot(_._1 == key)
+      distinctParser(notMatching).map { result => ex +: result }
+    } ?? Nil
+  }
+
+  private[this] def distinctParserString(exs: Set[String]): Parser[Seq[String]] = {
     val base = token(Space) ~> token(NotSpace examples exs)
     base.flatMap { ex =>
       val (_, notMatching) = exs.partition(GlobFilter(ex).accept)
-      distinctParser(notMatching).map { result => ex +: result }
+      distinctParserString(notMatching).map { result => ex +: result }
     } ?? Nil
   }
 }
