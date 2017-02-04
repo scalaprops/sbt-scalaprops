@@ -45,9 +45,10 @@ object ScalapropsPluginTest extends Scalaprops {
     test(" com.example.AAA aa_xx_1", Set(" ", ""))
     test(" com.example.AAA aa_xx_1 ", Set("aa_xx_2", "aa_yy") ++ keys)
     test(" com.example.AAA --max", Set("--maxDiscarded=", "--maxSize="))
+    test(" com.example.AAA --maxSize=", Set("<maxSize: Unsigned Int>"))
     test(" com.example.AAA --seed", Set("--seed="))
-    test(" com.example.AAA --seed=", Set("<seed>"))
-    test(" com.example.AAA --seed=12345", Set("<seed>"))
+    test(" com.example.AAA --seed=", Set("<seed: Long>"))
+    test(" com.example.AAA --seed=12345", Set("<seed: Long>"))
     test(" com.example.AAA --seed=12345 ", keys ++ aaaMethods)
     true
   }

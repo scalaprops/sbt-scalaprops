@@ -15,14 +15,14 @@ object ScalapropsPlugin extends AutoPlugin {
       (neg.toSeq ++ digits).mkString.toLong
   }
 
-  private[this] def param[A](p: Parser[A]): (String, (ScalapropsTest.Param, A) => ScalapropsTest.Param) => Parser[ScalapropsTest.Param] = {
+  private[this] def param[A](p: Parser[A], typeName: String): (String, (ScalapropsTest.Param, A) => ScalapropsTest.Param) => Parser[ScalapropsTest.Param] = {
     (key, f) =>
-      Space ~> token(("--" + key + "=") ~> token(p, s"<${key}>")).map { x =>
+      Space ~> token(("--" + key + "=") ~> token(p, s"<${key}: ${typeName}>")).map { x =>
         f(ScalapropsTest.Param.Default, x)
       }
   }
-  private[this] val long = param(LongBasic)
-  private[this] val uint = param(DefaultParsers.NatBasic)
+  private[this] val long = param(LongBasic, "Long")
+  private[this] val uint = param(DefaultParsers.NatBasic, "Unsigned Int")
 
   private[this] val Seed =
     long("seed", (p, x) => p.copy(seed = Some(x)))
