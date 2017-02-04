@@ -4,7 +4,7 @@ import com.typesafe.sbt.pgp.PgpKeys
 
 scalapropsSettings
 
-scalapropsVersion := "0.3.6"
+scalapropsVersion := "0.4.0"
 
 def gitHash = scala.util.Try(
   sys.process.Process("git rev-parse HEAD").lines_!.head
@@ -22,7 +22,7 @@ ScriptedPlugin.scriptedLaunchOpts ++= sys.process.javaVmArguments.filter(
 
 ScriptedPlugin.scriptedLaunchOpts ++= Seq(
   "-Dplugin.version=" + version.value,
-  "-Dscalaprops.version=0.3.6"
+  "-Dscalaprops.version=0.4.0"
 )
 
 startYear := Some(2015)
