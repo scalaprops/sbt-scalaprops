@@ -3,6 +3,10 @@ import ReleaseStateTransformations._
 import com.typesafe.sbt.pgp.PgpKeys
 import xerial.sbt.Sonatype.SonatypeKeys
 
+scalapropsSettings
+
+scalapropsVersion := "0.3.6"
+
 def gitHash = scala.util.Try(
   sys.process.Process("git rev-parse HEAD").lines_!.head
 ).getOrElse("master")
