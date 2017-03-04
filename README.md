@@ -5,7 +5,7 @@
 sbt plugin for [scalaprops](https://github.com/scalaprops/scalaprops)
 
 sbt-scalaprops provides `scalapropsOnly: InputKey[Unit]` command like `testOnly` but more powerful.
-__powerful__ means not only test class names but also test method names.
+__powerful__ means not only test class names but also test method names and [params](https://github.com/scalaprops/sbt-scalaprops/commit/c50e82740382eac812be2647e3d1d0f2c192e113).
 
 ### latest stable version
 
