@@ -4,7 +4,7 @@ import com.typesafe.sbt.pgp.PgpKeys
 
 scalapropsSettings
 
-scalapropsVersion := "0.4.2"
+scalapropsVersion := "0.4.3"
 
 def gitHash = scala.util.Try(
   sys.process.Process("git rev-parse HEAD").lines_!.head
