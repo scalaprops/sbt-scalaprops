@@ -3,7 +3,7 @@ package scalaprops
 import sbt._, Keys._
 import sbt.complete.{DefaultParsers, Parser}
 import sbt.complete.DefaultParsers._
-import sbinary.DefaultProtocol._
+import scalaprops.Serialization.Implicits._
 import scala.reflect.NameTransformer
 
 object ScalapropsPlugin extends AutoPlugin {
@@ -75,22 +75,20 @@ object ScalapropsPlugin extends AutoPlugin {
             Map.empty
         }
       },
-      scalapropsTestNames <<= {
-        // can't use := and .value
-        // https://github.com/sbt/sbt/issues/1444
+      scalapropsTestNames := {
         scalapropsTestNames storeAs scalapropsTestNames triggeredBy (compile in Test)
-      },
+      }.value,
       testFrameworks += new TestFramework("scalaprops.ScalapropsFramework"),
       parallelExecution in Test := false,
-      scalapropsOnly <<= InputTask.createDyn(
+      scalapropsOnly := InputTask.createDyn(
         Defaults.loadForParser(scalapropsTestNames)(
           (state, classes) => classes.fold(defaultParser)(createParser)
         )
       ) {
-        Def.task { test =>
+        Def.task { test: ScalapropsTest =>
           (testOnly in Test).toTask((" " :: test.className :: "--" :: "--only" :: test.methodNames.toList).mkString(" "))
         }
-      }
+      }.evaluated
     )
 
     val scalapropsSettings: Seq[Setting[_]] = scalapropsCoreSettings ++ Seq(

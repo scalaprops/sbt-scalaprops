@@ -8,8 +8,8 @@ object UpdateReadme {
 
   val updateReadmeTask = { state: State =>
     val extracted = Project.extract(state)
-    val scalaV = extracted get scalaBinaryVersion
-    val sbtV = extracted get sbtBinaryVersion
+    val scalaV = "2.10"
+    val sbtV = "0.13"
     val v = extracted get version
     val org =  extracted get organization
     val n = extracted get name

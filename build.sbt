@@ -12,6 +12,14 @@ def gitHash = scala.util.Try(
 
 ScriptedPlugin.scriptedSettings
 
+unmanagedSourceDirectories in Compile ++= {
+  if((sbtBinaryVersion in pluginCrossBuild).value.startsWith("1.0.")) {
+    ((scalaSource in Compile).value.getParentFile / "scala-sbt-1.0") :: Nil
+  } else {
+    Nil
+  }
+}
+
 sbtPlugin := true
 
 ScriptedPlugin.scriptedBufferLog := false
@@ -82,19 +90,32 @@ scalacOptions ++= (
   Nil
 )
 
+def crossSbtCommand(command: String): Seq[ReleaseStep] = {
+  def set(v: String) = releaseStepCommand("set sbtVersion in pluginCrossBuild := \"" + v + "\"")
+  List(
+    set("0.13.15"),
+    releaseStepCommand(command),
+    set("1.0.0-M6"),
+    releaseStepCommand(command)
+  )
+}
+
 releaseProcess := Seq[ReleaseStep](
   checkSnapshotDependencies,
   inquireVersions,
-  runClean,
-  runTest,
+  runClean
+) ++ Seq[Seq[ReleaseStep]](
+  crossSbtCommand("test"),
+  crossSbtCommand("scripted")
+).flatten ++ Seq[ReleaseStep](
   setReleaseVersion,
   commitReleaseVersion,
   UpdateReadme.updateReadmeProcess,
-  tagRelease,
-  releaseStepTask(PgpKeys.publishSigned),
+  tagRelease
+) ++ crossSbtCommand("publishSigned") ++ Seq[ReleaseStep](
   setNextVersion,
   commitNextVersion,
-  ReleaseStep(action = Command.process("sonatypeReleaseAll", _)),
+  releaseStepCommand("sonatypeReleaseAll"),
   UpdateReadme.updateReadmeProcess,
   pushChanges
 )
@@ -103,3 +124,35 @@ credentials ++= PartialFunction.condOpt(sys.env.get("SONATYPE_USER") -> sys.env.
   case (Some(user), Some(password)) =>
     Credentials("Sonatype Nexus Repository Manager", "oss.sonatype.org", user, password)
 }.toList
+
+// https://github.com/sbt/sbt/issues/3245
+ScriptedPlugin.scripted := Def.inputTask {
+  val args = ScriptedPlugin.asInstanceOf[{
+    def scriptedParser(f: File): complete.Parser[Seq[String]]
+  }].scriptedParser(sbtTestDirectory.value).parsed
+  val prereq: Unit = scriptedDependencies.value
+  try {
+    if((sbtVersion in pluginCrossBuild).value == "1.0.0-M6") {
+      ScriptedPlugin.scriptedTests.value.asInstanceOf[{
+        def run(x1: File, x2: Boolean, x3: Array[String], x4: File, x5: Array[String], x6: java.util.List[File]): Unit
+      }].run(
+        sbtTestDirectory.value,
+        scriptedBufferLog.value,
+        args.toArray,
+        sbtLauncher.value,
+        scriptedLaunchOpts.value.toArray,
+        new java.util.ArrayList()
+      )
+    } else {
+      ScriptedPlugin.scriptedTests.value.asInstanceOf[{
+        def run(x1: File, x2: Boolean, x3: Array[String], x4: File, x5: Array[String]): Unit
+      }].run(
+        sbtTestDirectory.value,
+        scriptedBufferLog.value,
+        args.toArray,
+        sbtLauncher.value,
+        scriptedLaunchOpts.value.toArray
+      )
+    }
+  } catch { case e: java.lang.reflect.InvocationTargetException => throw e.getCause }
+}.evaluated
