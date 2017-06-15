@@ -126,7 +126,7 @@ credentials ++= PartialFunction.condOpt(sys.env.get("SONATYPE_USER") -> sys.env.
 }.toList
 
 // https://github.com/sbt/sbt/issues/3245
-ScriptedPlugin.scripted := Def.inputTask {
+ScriptedPlugin.scripted := {
   val args = ScriptedPlugin.asInstanceOf[{
     def scriptedParser(f: File): complete.Parser[Seq[String]]
   }].scriptedParser(sbtTestDirectory.value).parsed
@@ -155,4 +155,4 @@ ScriptedPlugin.scripted := Def.inputTask {
       )
     }
   } catch { case e: java.lang.reflect.InvocationTargetException => throw e.getCause }
-}.evaluated
+}
