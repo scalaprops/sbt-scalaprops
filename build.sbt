@@ -16,7 +16,7 @@ libraryDependencies ++= {
   }
 }
 
-scalapropsVersion := "0.4.3"
+scalapropsVersion := "0.5.0"
 
 def gitHash = scala.util.Try(
   sys.process.Process("git rev-parse HEAD").lines_!.head
@@ -43,6 +43,7 @@ ScriptedPlugin.scriptedLaunchOpts ++= sys.process.javaVmArguments.filter(
 ScriptedPlugin.scriptedLaunchOpts ++= Seq(
   "-Dscala-native.version=" + nativeVersion,
   "-Dplugin.version=" + version.value,
+  "-Dscala-native.version=" + nativeVersion,
   "-Dscalaprops.version=" + scalapropsVersion.value
 )
 
