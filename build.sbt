@@ -4,6 +4,18 @@ import com.typesafe.sbt.pgp.PgpKeys
 
 scalapropsSettings
 
+libraryDependencies ++= {
+  if((sbtBinaryVersion in pluginCrossBuild).value.startsWith("1.0.")) {
+    Nil
+  } else {
+    Defaults.sbtPluginExtra(
+      m = "org.scala-native" % "sbt-scala-native" % nativeVersion % "provided",
+      sbtV = (sbtBinaryVersion in update).value,
+      scalaV = (scalaBinaryVersion in update).value
+    ) :: Nil
+  }
+}
+
 scalapropsVersion := "0.4.3"
 
 def gitHash = scala.util.Try(
@@ -29,6 +41,7 @@ ScriptedPlugin.scriptedLaunchOpts ++= sys.process.javaVmArguments.filter(
 )
 
 ScriptedPlugin.scriptedLaunchOpts ++= Seq(
+  "-Dscala-native.version=" + nativeVersion,
   "-Dplugin.version=" + version.value,
   "-Dscalaprops.version=" + scalapropsVersion.value
 )

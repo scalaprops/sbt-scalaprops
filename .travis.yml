@@ -8,7 +8,12 @@ cache:
 jdk:
   - oraclejdk8
 
-sudo: false
+sudo: required
+
+dist: trusty
+
+before_install:
+- curl https://raw.githubusercontent.com/scala-native/scala-native/v0.3.0/bin/travis_setup.sh | bash -x
 
 script:
   - git config core.whitespace tab-in-indent,trailing-space,space-before-tab,cr-at-eol
