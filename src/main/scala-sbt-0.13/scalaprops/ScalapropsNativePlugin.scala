@@ -3,7 +3,6 @@ package scalaprops
 import sbt._
 import sbt.Keys._
 import ScalapropsPlugin.autoImport._
-import scala.scalanative.sbtplugin.ScalaNativePlugin
 import scala.scalanative.sbtplugin.ScalaNativePluginInternal
 import scala.scalanative.sbtplugin.ScalaNativePlugin.autoImport._
 
