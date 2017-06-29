@@ -104,29 +104,34 @@ scalacOptions ++= (
   Nil
 )
 
-def crossSbtCommand(command: String): Seq[ReleaseStep] = {
-  def set(v: String) = releaseStepCommand("set sbtVersion in pluginCrossBuild := \"" + v + "\"")
-  List(
-    set("0.13.15"),
-    releaseStepCommand(command),
-    set("1.0.0-M6"),
-    releaseStepCommand(command)
+def setSbtPluginCross(v: String) = "set sbtVersion in pluginCrossBuild := \"" + v + "\""
+val SetSbt_0_13 = setSbtPluginCross("0.13.15")
+val SetSbt_1 = setSbtPluginCross("1.0.0-M6")
+
+def crossSbtCommand(command: String): ReleaseStep = {
+  val list = List(
+    SetSbt_0_13,
+    command,
+    SetSbt_1,
+    command
   )
+  releaseStepCommandAndRemaining(list.mkString(";", ";", ""))
 }
 
 releaseProcess := Seq[ReleaseStep](
   checkSnapshotDependencies,
   inquireVersions,
-  runClean
-) ++ Seq[Seq[ReleaseStep]](
+  runClean,
   crossSbtCommand("test"),
-  crossSbtCommand("scripted")
-).flatten ++ Seq[ReleaseStep](
+  releaseStepCommand(SetSbt_0_13),
+  releaseStepCommand("scripted"),
+  releaseStepCommand(SetSbt_1),
+  releaseStepCommand("scripted test/*"),
   setReleaseVersion,
   commitReleaseVersion,
   UpdateReadme.updateReadmeProcess,
-  tagRelease
-) ++ crossSbtCommand("publishSigned") ++ Seq[ReleaseStep](
+  tagRelease,
+  crossSbtCommand("publishSigned"),
   setNextVersion,
   commitNextVersion,
   releaseStepCommand("sonatypeReleaseAll"),
