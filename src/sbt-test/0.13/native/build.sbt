@@ -25,3 +25,9 @@ scalacOptions ++= (
   "-language:implicitConversions" ::
   Nil
 )
+
+TaskKey[Unit]("checkTestMainClasses") := {
+  val classes = (discoveredMainClasses in Test).value.toSet
+  val expect = Set("example.OtherTestMain1", "example.OtherTestMain2", "scalaprops.NativeTestMain")
+  assert(classes == expect, classes)
+}

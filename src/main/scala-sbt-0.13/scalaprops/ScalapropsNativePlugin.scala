@@ -5,6 +5,7 @@ import sbt.Keys._
 import ScalapropsPlugin.autoImport._
 import scala.scalanative.sbtplugin.ScalaNativePluginInternal
 import scala.scalanative.sbtplugin.ScalaNativePlugin.autoImport._
+import Serialization.Implicits._
 
 object ScalapropsNativePlugin extends AutoPlugin {
 
@@ -17,6 +18,7 @@ object ScalapropsNativePlugin extends AutoPlugin {
     }
 
     val ScalapropsNativeTest = config("scalapropsNativeTest").extend(Test)
+    val scalapropsNativeTestMain = SettingKey[String]("scalapropsNativeTestMain")
     val scalapropsNativeWarnEnv = SettingKey[WhenNotNativeEnv](
       "scalapropsNativeWarnEnv",
       "select behavior when not scala-native environment. detect project setting error or sbt-scalaprops bug."
@@ -53,7 +55,7 @@ object ScalapropsNativePlugin extends AutoPlugin {
             )
         }.mkString
 
-        val mainClassFullName = (selectMainClass in Test).value.getOrElse(defaultTestMain)
+        val mainClassFullName = scalapropsNativeTestMain.value
 
         val (mainPackage, mainClass) = mainClassFullName.split('.').toList match {
           case init :+ last =>
@@ -111,21 +113,27 @@ object ScalapropsNativePlugin extends AutoPlugin {
 
   lazy val settings: Seq[Def.Setting[_]] = Seq(
     Seq(
+      scalapropsNativeTestMain := scalapropsNativeTestMain.?.value.getOrElse(defaultTestMain),
       scalapropsNativeWarnEnv := WhenNotNativeEnv.ThrowError
     ),
     inConfig(ScalapropsNativeTest)(ScalaNativePluginInternal.scalaNativeConfigSettings),
     inConfig(ScalapropsNativeTest)(scalapropsNativeTestSettings),
     inConfig(Test)(Seq(
+      discoveredMainClasses := {
+        Def.task{
+          Defaults.discoverMainClasses(
+            (compile in ScalapropsNativeTest).value ++ (compile in Test).value
+          )
+        }
+        .storeAs(discoveredMainClasses in Test)
+        .triggeredBy(compile in Test)
+      }.value,
       nativeLink := (nativeLink in ScalapropsNativeTest).value,
-      selectMainClass := Some(
-        (selectMainClass in Test).value.getOrElse(defaultTestMain)
-      ),
       test := {
         val binary = (nativeLink in ScalapropsNativeTest).value
         runTest(binary, Nil)
       },
       testOnly := {
-        import Serialization.Implicits._
         val parser = loadForParser(definedTestNames)((s, i) => Defaults.testOnlyParser(s, i getOrElse Nil))
         Def.inputTaskDyn {
           val (selected, frameworkOptions) = parser.parsed

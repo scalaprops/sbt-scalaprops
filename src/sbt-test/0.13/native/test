@@ -1,3 +1,4 @@
+> checkTestMainClasses
 > test
 $ exists target/scala-2.11/src_managed/test/scalaprops/NativeTestMain.scala
 $ exec cat target/scala-2.11/src_managed/test/scalaprops/NativeTestMain.scala
@@ -11,7 +12,7 @@ $ exec cat target/scala-2.11/src_managed/test/scalaprops/NativeTestMain.scala
 > test
 $ exec cat target/scala-2.11/src_managed/test/scalaprops/NativeTestMain.scala
 
-> set selectMainClass in Test := Some("false.if.else")
+> set scalapropsNativeTestMain :="false.if.else"
 > test
 $ exists target/scala-2.11/src_managed/test/false/if/else.scala
 $ exec cat target/scala-2.11/src_managed/test/false/if/else.scala
