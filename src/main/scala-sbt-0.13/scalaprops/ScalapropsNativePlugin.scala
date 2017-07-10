@@ -133,6 +133,20 @@ object ScalapropsNativePlugin extends AutoPlugin {
         val binary = (nativeLink in ScalapropsNativeTest).value
         runTest(binary, Nil)
       },
+      run := {
+        val args = Def.spaceDelimited().parsed
+        val main = Defaults.askForMainClass((discoveredMainClasses in Test).value).getOrElse(
+          sys.error("No main class detected.")
+        )
+        val s = state.value
+        val newState = s.put(scalapropsNativeTestMain.key, main)
+        val extracted = Project.extract(newState)
+        val (_, binary) = extracted.runTask(
+          key = nativeLink in ScalapropsNativeTest,
+          state = newState
+        )
+        runTest(binary, args)
+      },
       testOnly := {
         val parser = loadForParser(definedTestNames)((s, i) => Defaults.testOnlyParser(s, i getOrElse Nil))
         Def.inputTaskDyn {

@@ -1,4 +1,6 @@
 > checkTestMainClasses
+> test:runMain scalaprops.NativeTestMain
+
 > test
 $ exists target/scala-2.11/src_managed/test/scalaprops/NativeTestMain.scala
 $ exec cat target/scala-2.11/src_managed/test/scalaprops/NativeTestMain.scala
