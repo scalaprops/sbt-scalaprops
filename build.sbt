@@ -2,6 +2,15 @@ import sbtrelease._
 import ReleaseStateTransformations._
 import com.typesafe.sbt.pgp.PgpKeys
 
+val tagName = Def.setting {
+  s"v${if (releaseUseGlobalVersion.value) (version in ThisBuild).value else version.value}"
+}
+
+val tagOrHash = Def.setting {
+  if (isSnapshot.value) sys.process.Process("git rev-parse HEAD").lines_!.head
+  else tagName.value
+}
+
 scalapropsSettings
 
 libraryDependencies ++= {
@@ -17,10 +26,6 @@ libraryDependencies ++= {
 }
 
 scalapropsVersion := "0.5.0"
-
-def gitHash = scala.util.Try(
-  sys.process.Process("git rev-parse HEAD").lines_!.head
-).getOrElse("master")
 
 ScriptedPlugin.scriptedSettings
 
@@ -73,10 +78,9 @@ pomPostProcess := { node =>
 }
 
 scalacOptions in (Compile, doc) ++= {
-  val tag = if(isSnapshot.value) gitHash else { "v" + version.value }
   Seq(
     "-sourcepath", (baseDirectory in LocalRootProject).value.getAbsolutePath,
-    "-doc-source-url", s"https://github.com/scalaprops/sbt-scalaprops/tree/${tag}€{FILE_PATH}.scala"
+    "-doc-source-url", s"https://github.com/scalaprops/sbt-scalaprops/tree/${tagOrHash.value}€{FILE_PATH}.scala"
   )
 }
 
@@ -91,7 +95,7 @@ pomExtra :=
   <scm>
     <url>git@github.com:scalaprops/sbt-scalaprops.git</url>
     <connection>scm:git:git@github.com:scalaprops/sbt-scalaprops.git</connection>
-    <tag>{if(isSnapshot.value) gitHash else { "v" + version.value }}</tag>
+    <tag>{tagOrHash.value}</tag>
   </scm>
 
 scalacOptions ++= (
@@ -117,6 +121,8 @@ def crossSbtCommand(command: String): ReleaseStep = {
   )
   releaseStepCommandAndRemaining(list.mkString(";", ";", ""))
 }
+
+releaseTagName := tagName.value
 
 releaseProcess := Seq[ReleaseStep](
   checkSnapshotDependencies,
