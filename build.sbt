@@ -14,7 +14,7 @@ val tagOrHash = Def.setting {
 scalapropsSettings
 
 libraryDependencies ++= {
-  if((sbtBinaryVersion in pluginCrossBuild).value.startsWith("1.0.")) {
+  if((sbtBinaryVersion in pluginCrossBuild).value.startsWith("1.0")) {
     Nil
   } else {
     Defaults.sbtPluginExtra(
@@ -27,13 +27,21 @@ libraryDependencies ++= {
 
 scalapropsVersion := "0.5.0"
 
-ScriptedPlugin.scriptedSettings
+ScriptedPlugin.scriptedSettings.filterNot(_.key.key.label == libraryDependencies.key.label)
 
-unmanagedSourceDirectories in Compile ++= {
-  if((sbtBinaryVersion in pluginCrossBuild).value.startsWith("1.0.")) {
-    ((scalaSource in Compile).value.getParentFile / "scala-sbt-1.0") :: Nil
-  } else {
-    Nil
+// https://github.com/sbt/sbt/issues/3325
+libraryDependencies ++= {
+  CrossVersion.binarySbtVersion(scriptedSbt.value) match {
+    case "0.13" =>
+      Seq(
+        "org.scala-sbt" % "scripted-sbt" % scriptedSbt.value % scriptedConf.toString,
+        "org.scala-sbt" % "sbt-launch" % scriptedSbt.value % scriptedLaunchConf.toString
+      )
+    case _ =>
+      Seq(
+        "org.scala-sbt" %% "scripted-sbt" % scriptedSbt.value % scriptedConf.toString,
+        "org.scala-sbt" % "sbt-launch" % scriptedSbt.value % scriptedLaunchConf.toString
+      )
   }
 }
 
@@ -110,7 +118,7 @@ scalacOptions ++= (
 
 def setSbtPluginCross(v: String) = "set sbtVersion in pluginCrossBuild := \"" + v + "\""
 val SetSbt_0_13 = setSbtPluginCross("0.13.15")
-val SetSbt_1 = setSbtPluginCross("1.0.0-M6")
+val SetSbt_1 = setSbtPluginCross("1.0.0-RC2")
 
 def crossSbtCommand(command: String): ReleaseStep = {
   val list = List(
@@ -149,35 +157,3 @@ credentials ++= PartialFunction.condOpt(sys.env.get("SONATYPE_USER") -> sys.env.
   case (Some(user), Some(password)) =>
     Credentials("Sonatype Nexus Repository Manager", "oss.sonatype.org", user, password)
 }.toList
-
-// https://github.com/sbt/sbt/issues/3245
-ScriptedPlugin.scripted := {
-  val args = ScriptedPlugin.asInstanceOf[{
-    def scriptedParser(f: File): complete.Parser[Seq[String]]
-  }].scriptedParser(sbtTestDirectory.value).parsed
-  val prereq: Unit = scriptedDependencies.value
-  try {
-    if((sbtVersion in pluginCrossBuild).value == "1.0.0-M6") {
-      ScriptedPlugin.scriptedTests.value.asInstanceOf[{
-        def run(x1: File, x2: Boolean, x3: Array[String], x4: File, x5: Array[String], x6: java.util.List[File]): Unit
-      }].run(
-        sbtTestDirectory.value,
-        scriptedBufferLog.value,
-        args.toArray,
-        sbtLauncher.value,
-        scriptedLaunchOpts.value.toArray,
-        new java.util.ArrayList()
-      )
-    } else {
-      ScriptedPlugin.scriptedTests.value.asInstanceOf[{
-        def run(x1: File, x2: Boolean, x3: Array[String], x4: File, x5: Array[String]): Unit
-      }].run(
-        sbtTestDirectory.value,
-        scriptedBufferLog.value,
-        args.toArray,
-        sbtLauncher.value,
-        scriptedLaunchOpts.value.toArray
-      )
-    }
-  } catch { case e: java.lang.reflect.InvocationTargetException => throw e.getCause }
-}
