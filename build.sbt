@@ -25,7 +25,7 @@ libraryDependencies ++= {
   }
 }
 
-scalapropsVersion := "0.5.0"
+scalapropsVersion := "0.5.1"
 
 ScriptedPlugin.scriptedSettings
 
