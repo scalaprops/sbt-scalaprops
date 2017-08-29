@@ -102,7 +102,7 @@ scalacOptions ++= (
 
 def setSbtPluginCross(v: String) = "set sbtVersion in pluginCrossBuild := \"" + v + "\""
 val SetSbt_0_13 = setSbtPluginCross("0.13.16")
-val SetSbt_1 = setSbtPluginCross("1.0.0")
+val SetSbt_1 = setSbtPluginCross("1.0.1")
 
 def crossSbtCommand(command: String): ReleaseStep = {
   val list = List(
