@@ -20,17 +20,11 @@ val tagOrHash = Def.setting {
 
 scalapropsSettings
 
-libraryDependencies ++= {
-  if((sbtBinaryVersion in pluginCrossBuild).value.startsWith("1.0")) {
-    Nil
-  } else {
-    Defaults.sbtPluginExtra(
-      m = "org.scala-native" % "sbt-scala-native" % nativeVersion % "provided",
-      sbtV = (sbtBinaryVersion in update).value,
-      scalaV = (scalaBinaryVersion in update).value
-    ) :: Nil
-  }
-}
+libraryDependencies += Defaults.sbtPluginExtra(
+  m = "org.scala-native" % "sbt-scala-native" % nativeVersion % "provided",
+  sbtV = (sbtBinaryVersion in pluginCrossBuild).value,
+  scalaV = (scalaBinaryVersion in pluginCrossBuild).value
+)
 
 scalapropsVersion := "0.5.2"
 
@@ -107,19 +101,7 @@ scalacOptions ++= (
   Nil
 )
 
-def setSbtPluginCross(v: String) = "set sbtVersion in pluginCrossBuild := \"" + v + "\""
-val SetSbt_0_13 = setSbtPluginCross("0.13.16")
-val SetSbt_1 = setSbtPluginCross("1.0.4")
-
-def crossSbtCommand(command: String): ReleaseStep = {
-  val list = List(
-    SetSbt_0_13,
-    command,
-    SetSbt_1,
-    command
-  )
-  releaseStepCommandAndRemaining(list.mkString(";", ";", ""))
-}
+crossSbtVersions := Seq("0.13.16", "1.0.4")
 
 releaseTagName := tagName.value
 
@@ -127,16 +109,13 @@ releaseProcess := Seq[ReleaseStep](
   checkSnapshotDependencies,
   inquireVersions,
   runClean,
-  crossSbtCommand("test"),
-  releaseStepCommand(SetSbt_0_13),
-  releaseStepCommand("scripted"),
-  releaseStepCommand(SetSbt_1),
-  releaseStepCommand("scripted test/*"),
+  releaseStepCommandAndRemaining("^ test"),
+  releaseStepCommandAndRemaining("^ scripted"),
   setReleaseVersion,
   commitReleaseVersion,
   UpdateReadme.updateReadmeProcess,
   tagRelease,
-  crossSbtCommand("publishSigned"),
+  releaseStepCommandAndRemaining("^ publishSigned"),
   setNextVersion,
   commitNextVersion,
   releaseStepCommand("sonatypeReleaseAll"),

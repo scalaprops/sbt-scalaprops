@@ -100,7 +100,7 @@ object ScalapropsNativePlugin extends AutoPlugin {
   private[this] val defaultTestMain = "scalaprops.NativeTestMain"
 
   private[this] def runTest(binary: File, options: Seq[String]) = {
-    val exitCode = Process(binary.getAbsolutePath +: options, None)
+    val exitCode = scala.sys.process.Process(binary.getAbsolutePath +: options, None)
       .run(connectInput = true)
       .exitValue
 
