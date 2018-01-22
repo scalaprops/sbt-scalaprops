@@ -41,7 +41,7 @@ object ScalapropsNativePlugin extends AutoPlugin {
       classDirectory := (classDirectory in Test).value,
       dependencyClasspath := (dependencyClasspath in Test).value,
       sourceGenerators += Def.task {
-        val tests = (scalapropsTestNames in Test).value.toList.sortBy(_._1).flatMap{
+        val tests = (scalapropsTestNames in Test).value.toList.sortBy(_._1).withFilter(_._2.nonEmpty).flatMap{
           case (obj, methods) =>
             val o = obj.split('.').map(escapeIfKeyword).mkString("_root_.", ".", "")
             methods.toList.sorted.map{ m =>
