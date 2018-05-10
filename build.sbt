@@ -34,9 +34,15 @@ sbtPlugin := true
 
 ScriptedPlugin.scriptedBufferLog := false
 
-ScriptedPlugin.scriptedLaunchOpts ++= sys.process.javaVmArguments.filter(
-  a => Seq("-Xmx", "-Xms", "-XX", "-Dsbt.log.noformat").exists(a.startsWith)
-)
+ScriptedPlugin.scriptedLaunchOpts ++= {
+  val javaVmArgs = {
+    import scala.collection.JavaConverters._
+    java.lang.management.ManagementFactory.getRuntimeMXBean.getInputArguments.asScala.toList
+  }
+  javaVmArgs.filter(
+    a => Seq("-Xmx", "-Xms", "-XX", "-Dsbt.log.noformat").exists(a.startsWith)
+  )
+}
 
 ScriptedPlugin.scriptedLaunchOpts ++= Seq(
   "-Dscala-native.version=" + nativeVersion,
