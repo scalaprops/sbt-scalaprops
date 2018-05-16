@@ -26,7 +26,7 @@ libraryDependencies += Defaults.sbtPluginExtra(
   scalaV = (scalaBinaryVersion in pluginCrossBuild).value
 )
 
-scalapropsVersion := "0.5.4"
+scalapropsVersion := "0.5.5"
 
 ScriptedPlugin.scriptedSettings
 
