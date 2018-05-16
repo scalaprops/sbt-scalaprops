@@ -8,6 +8,10 @@ cache:
 jdk:
   - oraclejdk8
 
+addons:
+  apt:
+    update: true
+
 sudo: required
 
 before_install:
