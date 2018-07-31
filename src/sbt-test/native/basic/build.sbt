@@ -14,7 +14,7 @@ scalapropsNativeSettings
 
 scalapropsVersion := System.getProperty("scalaprops.version")
 
-scalaVersion := "2.11.11"
+scalaVersion := "2.11.12"
 
 scalacOptions ++= (
   "-deprecation" ::
