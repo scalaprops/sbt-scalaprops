@@ -14,7 +14,7 @@ val tagName = Def.setting {
 }
 
 val tagOrHash = Def.setting {
-  if (isSnapshot.value) sys.process.Process("git rev-parse HEAD").lines_!.head
+  if (isSnapshot.value) sys.process.Process("git rev-parse HEAD").lineStream_!.head
   else tagName.value
 }
 
@@ -28,13 +28,11 @@ libraryDependencies += Defaults.sbtPluginExtra(
 
 scalapropsVersion := "0.5.5"
 
-ScriptedPlugin.scriptedSettings
+enablePlugins(SbtPlugin)
 
-sbtPlugin := true
+scriptedBufferLog := false
 
-ScriptedPlugin.scriptedBufferLog := false
-
-ScriptedPlugin.scriptedLaunchOpts ++= {
+scriptedLaunchOpts ++= {
   val javaVmArgs = {
     import scala.collection.JavaConverters._
     java.lang.management.ManagementFactory.getRuntimeMXBean.getInputArguments.asScala.toList
@@ -44,7 +42,7 @@ ScriptedPlugin.scriptedLaunchOpts ++= {
   )
 }
 
-ScriptedPlugin.scriptedLaunchOpts ++= Seq(
+scriptedLaunchOpts ++= Seq(
   "-Dscala-native.version=" + nativeVersion,
   "-Dplugin.version=" + version.value,
   "-Dscala-native.version=" + nativeVersion,
@@ -107,7 +105,7 @@ scalacOptions ++= (
   Nil
 )
 
-crossSbtVersions := Seq("0.13.17", "1.2.1")
+crossSbtVersions := Seq("0.13.17", "1.2.6")
 
 releaseTagName := tagName.value
 

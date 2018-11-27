@@ -28,9 +28,9 @@ matrix:
   include:
   - env: SBT_VERSION="0.13.17"
     jdk: oraclejdk8
-  - env: SBT_VERSION="1.2.1"
+  - env: SBT_VERSION="1.2.6"
     jdk: oraclejdk8
-  - env: SBT_VERSION="1.2.1"
+  - env: SBT_VERSION="1.2.6"
     jdk: openjdk11
 
 env:
