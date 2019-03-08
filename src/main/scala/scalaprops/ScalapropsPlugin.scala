@@ -96,7 +96,7 @@ object ScalapropsPlugin extends AutoPlugin {
     )
 
     val scalapropsWithScalazlaws: Seq[Setting[_]] = scalapropsSettings ++ Seq(
-      libraryDependencies += "com.github.scalaprops" %% "scalaprops-scalazlaws" % scalapropsVersion.value % "test"
+      libraryDependencies += "com.github.scalaprops" %% "scalaprops-scalaz" % scalapropsVersion.value % "test"
     )
   }
 
