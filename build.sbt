@@ -105,7 +105,7 @@ scalacOptions ++= (
   Nil
 )
 
-crossSbtVersions := Seq("0.13.17", "1.2.6")
+crossSbtVersions += "0.13.18"
 
 releaseTagName := tagName.value
 
