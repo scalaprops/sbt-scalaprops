@@ -1,4 +1,4 @@
-scalapropsWithScalazlaws
+scalapropsWithScalaz
 
 scalapropsVersion := System.getProperty("scalaprops.version")
 

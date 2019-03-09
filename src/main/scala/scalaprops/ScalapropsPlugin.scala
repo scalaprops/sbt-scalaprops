@@ -95,9 +95,12 @@ object ScalapropsPlugin extends AutoPlugin {
       libraryDependencies += "com.github.scalaprops" %% "scalaprops" % scalapropsVersion.value % "test"
     )
 
-    val scalapropsWithScalazlaws: Seq[Setting[_]] = scalapropsSettings ++ Seq(
+    val scalapropsWithScalaz: Seq[Setting[_]] = scalapropsSettings ++ Seq(
       libraryDependencies += "com.github.scalaprops" %% "scalaprops-scalaz" % scalapropsVersion.value % "test"
     )
+
+    @deprecated("use scalapropsWithScalaz instead", "0.3.1")
+    val scalapropsWithScalazlaws: Seq[Setting[_]] = scalapropsWithScalaz
   }
 
   final case class ScalapropsTest(
