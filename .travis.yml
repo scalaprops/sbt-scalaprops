@@ -6,7 +6,7 @@ cache:
     - $HOME/.sbt/launchers
 
 jdk:
-  - oraclejdk8
+  - openjdk8
 
 addons:
   apt:
@@ -27,8 +27,6 @@ script:
 matrix:
   include:
   - env: SBT_VERSION="0.13.18"
-    jdk: openjdk8
   - env: SBT_VERSION="1.2.8"
-    jdk: openjdk8
   - env: SBT_VERSION="1.2.8"
     jdk: openjdk11
