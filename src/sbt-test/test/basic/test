@@ -32,3 +32,12 @@ $ delete test3.txt
 -$ exists test3.txt
 
 > testOnly com.example.Test1 -- invalid_argument
+
+# https://github.com/scalaprops/sbt-scalaprops/issues/8
+> scalapropsOnly com.example.Test2
+> scalapropsOnly com.example.Test2 x
+> scalapropsOnly com.example.Test2 x y z
+-$ exists test2-x.txt
+> generateTest2
+> scalapropsOnly com.example.Test2 x
+$ exists test2-x.txt

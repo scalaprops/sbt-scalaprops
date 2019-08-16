@@ -21,3 +21,20 @@ scalacOptions ++= (
   "-language:implicitConversions" ::
   Nil
 )
+
+TaskKey[Unit]("generateTest2") := {
+  IO.write(
+    (sourceDirectory in Test).value / "scala" / "Test2.scala",
+    """package com.example
+
+import scalaprops._
+
+object Test2 extends Scalaprops {
+  val x = Property.forAll {
+    Test1.write("test2-x.txt", "x")
+    true
+  }
+}
+"""
+  )
+}

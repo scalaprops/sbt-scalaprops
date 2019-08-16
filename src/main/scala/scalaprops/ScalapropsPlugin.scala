@@ -82,7 +82,7 @@ object ScalapropsPlugin extends AutoPlugin {
       parallelExecution in Test := false,
       scalapropsOnly := InputTask.createDyn(
         Defaults.loadForParser(scalapropsTestNames)(
-          (state, classes) => classes.fold(defaultParser)(createParser)
+          (state, classes) => classes.fold(defaultParser)(x => createParser(x) | defaultParser)
         )
       ) {
         Def.task { test: ScalapropsTest =>

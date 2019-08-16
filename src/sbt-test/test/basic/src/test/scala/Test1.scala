@@ -6,7 +6,7 @@ import java.nio.file.{Files, Paths}
 
 object Test1 extends Scalaprops {
 
-  private[this] def write(file: String, text: String) =
+  def write(file: String, text: String) =
     Files.write(Paths.get(file), text.getBytes(StandardCharsets.UTF_8))
 
   val test1 = Property.forAll {
