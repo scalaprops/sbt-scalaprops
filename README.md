@@ -55,7 +55,7 @@ libraryDependencies += "com.github.scalaprops" %%% "scalaprops-scalaz" % scalapr
 ```
 
 
-- [API Documentation](https://oss.sonatype.org/service/local/repositories/releases/archive/com/github/scalaprops/sbt-scalaprops_2.10_0.13/0.3.2/sbt-scalaprops-0.3.2-javadoc.jar/!/index.html)
+- [API Documentation](https://oss.sonatype.org/service/local/repositories/releases/archive/com/github/scalaprops/sbt-scalaprops_2.12_1.0/0.3.2/sbt-scalaprops-0.3.2-javadoc.jar/!/scalaprops/index.html)
 
 
 ![screencast](https://raw.githubusercontent.com/scalaprops/sbt-scalaprops/master/screencast.gif)

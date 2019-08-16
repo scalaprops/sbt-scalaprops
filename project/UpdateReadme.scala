@@ -8,8 +8,8 @@ object UpdateReadme {
 
   val updateReadmeTask = { state: State =>
     val extracted = Project.extract(state)
-    val scalaV = "2.10"
-    val sbtV = "0.13"
+    val scalaV = "2.12"
+    val sbtV = "1.0"
     val v = extracted get version
     val org =  extracted get organization
     val n = extracted get name
@@ -21,7 +21,7 @@ object UpdateReadme {
       if(line.startsWith("addSbtPlugin") && matchReleaseOrSnapshot){
         s"""addSbtPlugin("${org}" % "${n}" % "$v")"""
       }else if(line.contains(sonatypeURL) && matchReleaseOrSnapshot){
-        s"- [API Documentation](${sonatypeURL}${snapshotOrRelease}/archive/${org.replace('.','/')}/${n}_${scalaV}_${sbtV}/${v}/${n}-${v}-javadoc.jar/!/index.html)"
+        s"- [API Documentation](${sonatypeURL}${snapshotOrRelease}/archive/${org.replace('.','/')}/${n}_${scalaV}_${sbtV}/${v}/${n}-${v}-javadoc.jar/!/scalaprops/index.html)"
       }else line
     }.mkString("", "\n", "\n")
     IO.write(readmeFile, newReadme)
