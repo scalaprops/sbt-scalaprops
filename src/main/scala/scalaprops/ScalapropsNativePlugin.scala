@@ -125,7 +125,7 @@ object ScalapropsNativePlugin extends AutoPlugin {
         runTest(binary, Nil)
       },
       testOnly := {
-        import Serialization.Implicits._
+        import sjsonnew.BasicJsonProtocol._
         val parser = loadForParser(definedTestNames)((s, i) => Defaults.testOnlyParser(s, i getOrElse Nil))
         Def.inputTaskDyn {
           val (selected, frameworkOptions) = parser.parsed

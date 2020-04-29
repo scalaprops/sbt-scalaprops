@@ -3,7 +3,7 @@ package scalaprops
 import sbt._, Keys._
 import sbt.complete.{DefaultParsers, Parser}
 import sbt.complete.DefaultParsers._
-import scalaprops.Serialization.Implicits._
+import sjsonnew.BasicJsonProtocol._
 import scala.reflect.NameTransformer
 
 object ScalapropsPlugin extends AutoPlugin {
