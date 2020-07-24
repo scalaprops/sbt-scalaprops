@@ -1,6 +1,6 @@
 # sbt-scalaprops
 
-[![Build Status](https://travis-ci.org/scalaprops/sbt-scalaprops.svg?branch=master)](https://travis-ci.org/scalaprops/sbt-scalaprops)
+[![Build Status](https://travis-ci.com/scalaprops/sbt-scalaprops.svg?branch=master)](https://travis-ci.com/scalaprops/sbt-scalaprops)
 
 sbt plugin for [scalaprops](https://github.com/scalaprops/scalaprops)
 
