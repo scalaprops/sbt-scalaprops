@@ -2,6 +2,8 @@ import sbtrelease._
 import ReleaseStateTransformations._
 import com.typesafe.sbt.pgp.PgpKeys
 
+scriptedBatchExecution := false
+
 publishTo := Some(
   if (isSnapshot.value)
     Opts.resolver.sonatypeSnapshots
