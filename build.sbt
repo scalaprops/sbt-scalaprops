@@ -28,7 +28,7 @@ libraryDependencies += Defaults.sbtPluginExtra(
   scalaV = (scalaBinaryVersion in pluginCrossBuild).value
 )
 
-scalapropsVersion := "0.8.0"
+scalapropsVersion := "0.8.1"
 
 enablePlugins(SbtPlugin)
 
