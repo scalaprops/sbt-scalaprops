@@ -1,7 +1,5 @@
 # sbt-scalaprops
 
-[![Build Status](https://travis-ci.com/scalaprops/sbt-scalaprops.svg?branch=master)](https://travis-ci.com/scalaprops/sbt-scalaprops)
-
 sbt plugin for [scalaprops](https://github.com/scalaprops/scalaprops)
 
 sbt-scalaprops provides `scalapropsOnly: InputKey[Unit]` command like `testOnly` but more powerful.
