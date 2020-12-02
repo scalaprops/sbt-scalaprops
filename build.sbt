@@ -1,6 +1,5 @@
 import sbtrelease._
 import ReleaseStateTransformations._
-import com.typesafe.sbt.pgp.PgpKeys
 
 scriptedBatchExecution := false
 
