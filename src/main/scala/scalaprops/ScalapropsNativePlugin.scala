@@ -116,7 +116,6 @@ object ScalapropsNativePlugin extends AutoPlugin {
     inConfig(ScalapropsNativeTest)(ScalaNativePluginInternal.scalaNativeConfigSettings),
     inConfig(ScalapropsNativeTest)(scalapropsNativeTestSettings),
     inConfig(Test)(Seq(
-      nativeLink := (nativeLink in ScalapropsNativeTest).value,
       selectMainClass := Some(
         (selectMainClass in Test).value.getOrElse(defaultTestMain)
       ),
