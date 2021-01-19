@@ -4,10 +4,10 @@ enablePlugins(ScalaNativePlugin)
 
 name := "sbt-scalaprops-native-test1"
 
-libraryDependencies ++= (
-  ("com.github.scalaprops" %%% "scalaprops" % scalapropsVersion.value % "test") ::
-  ("com.github.scalaprops" %%% "scalaprops-scalaz" % scalapropsVersion.value % "test") ::
-  Nil
+libraryDependencies ++= Seq(
+  "com.github.scalaprops" %%% "scalaprops" % scalapropsVersion.value % "test",
+  // TODO
+  // "com.github.scalaprops" %%% "scalaprops-scalaz" % scalapropsVersion.value % "test"
 )
 
 scalapropsNativeSettings
