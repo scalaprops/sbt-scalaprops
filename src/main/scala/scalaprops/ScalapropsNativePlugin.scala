@@ -41,55 +41,60 @@ object ScalapropsNativePlugin extends AutoPlugin {
       classDirectory := (classDirectory in Test).value,
       dependencyClasspath := (dependencyClasspath in Test).value,
       sourceGenerators += Def.task {
-        val tests = (scalapropsTestNames in Test).value.toList.sortBy(_._1).withFilter(_._2.nonEmpty).flatMap{
-          case (obj, methods) =>
-            val o = obj.split('.').map(escapeIfKeyword).mkString("_root_.", ".", "")
-            methods.toList.sorted.map{ m =>
-              s"""      ("$m", convert(${o}.${escapeIfKeyword(m)}))"""
-            }.mkString(
-              s"""    test(\n      "$obj",\n      $o,\n      xs,\n      a,\n""",
-              ",\n",
-              "\n    )\n\n"
-            )
-        }.mkString
+        val testNames = (scalapropsTestNames in Test).value.toList.sortBy(_._1).filter(_._2.nonEmpty)
+        if (testNames.nonEmpty) {
+          val tests = testNames.flatMap{
+            case (obj, methods) =>
+              val o = obj.split('.').map(escapeIfKeyword).mkString("_root_.", ".", "")
+              methods.toList.sorted.map{ m =>
+                s"""      ("$m", convert(${o}.${escapeIfKeyword(m)}))"""
+              }.mkString(
+                s"""    test(\n      "$obj",\n      $o,\n      xs,\n      a,\n""",
+                ",\n",
+                "\n    )\n\n"
+              )
+          }.mkString
 
-        val mainClassFullName = (selectMainClass in Test).value.getOrElse(defaultTestMain)
+          val mainClassFullName = (selectMainClass in Test).value.getOrElse(defaultTestMain)
 
-        val (mainPackage, mainClass) = mainClassFullName.split('.').toList match {
-          case init :+ last =>
-            (Some(init), last)
-          case clazz :: Nil =>
-            (None, clazz)
-          case Nil =>
-            sys.error("invalid native test main class name " + mainClassFullName)
+          val (mainPackage, mainClass) = mainClassFullName.split('.').toList match {
+            case init :+ last =>
+              (Some(init), last)
+            case clazz :: Nil =>
+              (None, clazz)
+            case Nil =>
+              sys.error("invalid native test main class name " + mainClassFullName)
+          }
+
+          val pack = mainPackage.fold("")("package " + _.map(escapeIfKeyword).mkString(".") + "\n\n")
+
+          val warn = scalapropsNativeWarnEnv.value match {
+            case WhenNotNativeEnv.NoWarn =>
+              ""
+            case WhenNotNativeEnv.PrintWarn =>
+              "warnIfNotNativeEnvironment()"
+            case WhenNotNativeEnv.ThrowError =>
+              "throwIfNotNativeEnvironment()"
+          }
+
+          val src = s"""${pack}object ${escapeIfKeyword(mainClass)} extends _root_.scalaprops.NativeTestHelper {
+          |  def main(args: _root_.scala.Array[_root_.java.lang.String]): _root_.scala.Unit = {
+          |    ${warn}
+          |    val xs = _root_.scalaprops.Arguments.objects(args.toList)
+          |    val a = _root_.scalaprops.Arguments.parse(args.toList)
+          |$tests
+          |    finish(a.showDuration)
+          |  }
+          |}
+          |""".stripMargin
+
+          val dir = (sourceManaged in Test).value
+          val f = mainPackage.toList.flatten.foldLeft(dir)(_ / _) / (mainClass + ".scala")
+          IO.write(f, src)
+          Seq(f)
+        } else {
+          Nil
         }
-
-        val pack = mainPackage.fold("")("package " + _.map(escapeIfKeyword).mkString(".") + "\n\n")
-
-        val warn = scalapropsNativeWarnEnv.value match {
-          case WhenNotNativeEnv.NoWarn =>
-            ""
-          case WhenNotNativeEnv.PrintWarn =>
-            "warnIfNotNativeEnvironment()"
-          case WhenNotNativeEnv.ThrowError =>
-            "throwIfNotNativeEnvironment()"
-        }
-
-        val src = s"""${pack}object ${escapeIfKeyword(mainClass)} extends _root_.scalaprops.NativeTestHelper {
-        |  def main(args: _root_.scala.Array[_root_.java.lang.String]): _root_.scala.Unit = {
-        |    ${warn}
-        |    val xs = _root_.scalaprops.Arguments.objects(args.toList)
-        |    val a = _root_.scalaprops.Arguments.parse(args.toList)
-        |$tests
-        |    finish(a.showDuration)
-        |  }
-        |}
-        |""".stripMargin
-
-        val dir = (sourceManaged in Test).value
-        val f = mainPackage.toList.flatten.foldLeft(dir)(_ / _) / (mainClass + ".scala")
-        IO.write(f, src)
-        Seq (f)
       }.taskValue,
       artifactPath in nativeLink := {
         crossTarget.value / (moduleName.value + "-test-out")
