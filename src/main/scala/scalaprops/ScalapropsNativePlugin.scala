@@ -54,7 +54,7 @@ object ScalapropsNativePlugin extends AutoPlugin {
             )
         }.mkString
 
-        val mainClassFullName = (selectMainClass in Test).value.getOrElse(defaultTestMain)
+        val mainClassFullName = "scalaprops.NativeTestMain"
 
         val (mainPackage, mainClass) = mainClassFullName.split('.').toList match {
           case init :+ last =>
@@ -106,8 +106,6 @@ object ScalapropsNativePlugin extends AutoPlugin {
       definedTests := (definedTests in Test).value
     )
 
-  private[this] val defaultTestMain = "scalaprops.NativeTestMain"
-
   private[this] def runTest(binary: File, options: Seq[String]) = {
     val exitCode = scala.sys.process.Process(binary.getAbsolutePath +: options, None)
       .run(connectInput = true)
@@ -125,9 +123,6 @@ object ScalapropsNativePlugin extends AutoPlugin {
     inConfig(ScalapropsNativeTest)(ScalaNativePluginInternal.scalaNativeConfigSettings),
     inConfig(ScalapropsNativeTest)(scalapropsNativeTestSettings),
     inConfig(Test)(Seq(
-      selectMainClass := Some(
-        (selectMainClass in Test).value.getOrElse(defaultTestMain)
-      ),
       test := {
         val binary = (nativeLink in ScalapropsNativeTest).value
         runTest(binary, Nil)
