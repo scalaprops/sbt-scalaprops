@@ -58,13 +58,13 @@ object ScalapropsPlugin extends AutoPlugin {
 
     val scalapropsCoreSettings: Seq[Setting[_]] = Seq(
       scalapropsTestNames := {
-        val loader = (testLoader in Test).value
+        val loader = (Test / testLoader).value
         val runnerName = "scalaprops.ScalapropsRunner"
         getSingletonInstance(runnerName, loader) match {
           case Right(clazz) =>
             val instance = clazz.getField("MODULE$").get(null)
             val method = clazz.getMethod("testFieldNames", classOf[Class[_]])
-            val testNames = (definedTestNames in Test).value
+            val testNames = (Test / definedTestNames).value
             testNames.map { testName =>
               val testClass = Class.forName(testName, true, loader)
               val testFields = method.invoke(instance, testClass).asInstanceOf[Array[String]]
@@ -76,17 +76,17 @@ object ScalapropsPlugin extends AutoPlugin {
         }
       },
       scalapropsTestNames := {
-        scalapropsTestNames storeAs scalapropsTestNames triggeredBy (compile in Test)
+        scalapropsTestNames storeAs scalapropsTestNames triggeredBy (Test / compile)
       }.value,
       testFrameworks += new TestFramework("scalaprops.ScalapropsFramework"),
-      parallelExecution in Test := false,
+      Test / parallelExecution := false,
       scalapropsOnly := InputTask.createDyn(
         Defaults.loadForParser(scalapropsTestNames)(
           (state, classes) => classes.fold(defaultParser)(x => createParser(x) | defaultParser)
         )
       ) {
         Def.task { test: ScalapropsTest =>
-          (testOnly in Test).toTask((" " :: test.className :: "--" :: "--only" :: test.methodNames.toList).mkString(" "))
+          (Test / testOnly).toTask((" " :: test.className :: "--" :: "--only" :: test.methodNames.toList).mkString(" "))
         }
       }.evaluated
     )

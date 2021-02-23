@@ -11,7 +11,7 @@ publishTo := Some(
 )
 
 val tagName = Def.setting {
-  s"v${if (releaseUseGlobalVersion.value) (version in ThisBuild).value else version.value}"
+  s"v${if (releaseUseGlobalVersion.value) (ThisBuild / version).value else version.value}"
 }
 
 val tagOrHash = Def.setting {
@@ -23,8 +23,8 @@ scalapropsSettings
 
 libraryDependencies += Defaults.sbtPluginExtra(
   m = "org.scala-native" % "sbt-scala-native" % nativeVersion % "provided",
-  sbtV = (sbtBinaryVersion in pluginCrossBuild).value,
-  scalaV = (scalaBinaryVersion in pluginCrossBuild).value
+  sbtV = (pluginCrossBuild / sbtBinaryVersion).value,
+  scalaV = (pluginCrossBuild / scalaBinaryVersion).value
 )
 
 scalapropsVersion := "0.8.2"
@@ -75,9 +75,9 @@ pomPostProcess := { node =>
   new RuleTransformer(stripTestScope).transform(node)(0)
 }
 
-scalacOptions in (Compile, doc) ++= {
+(Compile / doc / scalacOptions) ++= {
   Seq(
-    "-sourcepath", (baseDirectory in LocalRootProject).value.getAbsolutePath,
+    "-sourcepath", (LocalRootProject / baseDirectory).value.getAbsolutePath,
     "-doc-source-url", s"https://github.com/scalaprops/sbt-scalaprops/tree/${tagOrHash.value}€{FILE_PATH}.scala"
   )
 }

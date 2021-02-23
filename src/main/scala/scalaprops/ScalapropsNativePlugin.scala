@@ -38,10 +38,10 @@ object ScalapropsNativePlugin extends AutoPlugin {
   private[this] lazy val scalapropsNativeTestSettings =
     Defaults.compileSettings ++
     Defaults.testSettings ++ Seq(
-      classDirectory := (classDirectory in Test).value,
-      dependencyClasspath := (dependencyClasspath in Test).value,
+      classDirectory := (Test / classDirectory).value,
+      dependencyClasspath := (Test / dependencyClasspath).value,
       sourceGenerators += Def.task {
-        val testNames = (scalapropsTestNames in Test).value.toList.sortBy(_._1).filter(_._2.nonEmpty)
+        val testNames = (Test / scalapropsTestNames).value.toList.sortBy(_._1).filter(_._2.nonEmpty)
         val tests = testNames.flatMap{
           case (obj, methods) =>
             val o = obj.split('.').map(escapeIfKeyword).mkString("_root_.", ".", "")
@@ -95,15 +95,15 @@ object ScalapropsNativePlugin extends AutoPlugin {
           |""".stripMargin
         }
 
-        val dir = (sourceManaged in Test).value
+        val dir = (Test / sourceManaged).value
         val f = mainPackage.toList.flatten.foldLeft(dir)(_ / _) / (mainClass + ".scala")
         IO.write(f, src)
         Seq(f)
       }.taskValue,
-      artifactPath in nativeLink := {
+      (nativeLink / artifactPath) := {
         crossTarget.value / (moduleName.value + "-test-out")
       },
-      definedTests := (definedTests in Test).value
+      definedTests := (Test / definedTests).value
     )
 
   private[this] def runTest(binary: File, options: Seq[String]) = {
@@ -124,7 +124,7 @@ object ScalapropsNativePlugin extends AutoPlugin {
     inConfig(ScalapropsNativeTest)(scalapropsNativeTestSettings),
     inConfig(Test)(Seq(
       test := {
-        val binary = (nativeLink in ScalapropsNativeTest).value
+        val binary = (ScalapropsNativeTest / nativeLink).value
         runTest(binary, Nil)
       },
       testOnly := {
@@ -133,7 +133,7 @@ object ScalapropsNativePlugin extends AutoPlugin {
         Def.inputTaskDyn {
           val (selected, frameworkOptions) = parser.parsed
           Def.task {
-            val binary = (nativeLink in ScalapropsNativeTest).value
+            val binary = (ScalapropsNativeTest / nativeLink).value
             runTest(binary, selected ++ frameworkOptions)
           }
         }
