@@ -20,7 +20,7 @@ addSbtPlugin("com.github.scalaprops" % "sbt-scalaprops" % "0.4.1")
 ```scala
 scalapropsSettings
 
-scalapropsVersion := "0.8.2"
+scalapropsVersion := "0.8.3"
 ```
 
 or
@@ -28,7 +28,7 @@ or
 ```scala
 scalapropsWithScalaz
 
-scalapropsVersion := "0.8.2"
+scalapropsVersion := "0.8.3"
 ```
 
 #### Scala.js
@@ -38,7 +38,7 @@ scalapropsVersion := "0.8.2"
 ```scala
 scalapropsCoreSettings
 
-libraryDependencies += "com.github.scalaprops" %%% "scalaprops" % "0.8.2" % "test"
+libraryDependencies += "com.github.scalaprops" %%% "scalaprops" % "0.8.3" % "test"
 ```
 
 or
@@ -46,7 +46,7 @@ or
 ```scala
 scalapropsCoreSettings
 
-val scalapropsVersion = "0.8.2"
+val scalapropsVersion = "0.8.3"
 
 libraryDependencies += "com.github.scalaprops" %%% "scalaprops" % scalapropsVersion % "test"
 libraryDependencies += "com.github.scalaprops" %%% "scalaprops-scalaz" % scalapropsVersion % "test"
