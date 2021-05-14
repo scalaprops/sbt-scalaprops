@@ -13,7 +13,7 @@ scalapropsNativeSettings
 
 scalapropsVersion := System.getProperty("scalaprops.version")
 
-crossScalaVersions := Seq("2.11.12", "2.12.13", "2.13.4")
+crossScalaVersions := Seq("2.11.12", "2.12.13", "2.13.5")
 
 scalacOptions ++= (
   "-deprecation" ::
