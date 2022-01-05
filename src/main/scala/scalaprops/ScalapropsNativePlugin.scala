@@ -3,6 +3,7 @@ package scalaprops
 import sbt._
 import sbt.Keys._
 import ScalapropsPlugin.autoImport._
+import scala.reflect.NameTransformer
 import scala.scalanative.sbtplugin.ScalaNativePluginInternal
 import scala.scalanative.sbtplugin.ScalaNativePlugin.autoImport._
 
@@ -46,7 +47,8 @@ object ScalapropsNativePlugin extends AutoPlugin {
           case (obj, methods) =>
             val o = obj.split('.').map(escapeIfKeyword).mkString("_root_.", ".", "")
             methods.toList.sorted.map{ m =>
-              s"""      ("$m", convert(${o}.${escapeIfKeyword(m)}))"""
+              val methodName = if (NameTransformer.decode(m) == m) escapeIfKeyword(m) else s"`${NameTransformer.decode(m)}`"
+              s"""      ("$m", convert(${o}.${methodName}))"""
             }.mkString(
               s"""    test(\n      "$obj",\n      $o,\n      xs,\n      a,\n""",
               ",\n",
