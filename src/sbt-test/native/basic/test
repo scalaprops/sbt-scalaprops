@@ -30,7 +30,7 @@ $ exec cat target/scala-2.13/src_managed/test/scalaprops/NativeTestMain.scala
 $ exec cat target/scala-3.1.0/src_managed/test/scalaprops/NativeTestMain.scala
 
 # TODO
-# > set selectMainClass in Test := Some("false.if.else")
+# > set Test / selectMainClass := Some("false.if.else")
 # > test
 # $ exists target/scala-2.11/src_managed/test/false/if/else.scala
 # $ exec cat target/scala-2.11/src_managed/test/false/if/else.scala

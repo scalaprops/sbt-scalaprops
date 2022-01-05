@@ -9,7 +9,7 @@ scalaVersion := scala211
 crossScalaVersions := scala211 :: "2.12.15" :: "2.13.6" :: Nil
 
 TaskKey[Unit]("checkParallelExecution") := {
-  assert((parallelExecution in Test).value == false)
+  assert((Test / parallelExecution).value == false)
 }
 
 scalacOptions ++= (
@@ -24,7 +24,7 @@ scalacOptions ++= (
 
 TaskKey[Unit]("generateTest2") := {
   IO.write(
-    (sourceDirectory in Test).value / "scala" / "Test2.scala",
+    (Test / sourceDirectory).value / "scala" / "Test2.scala",
     """package com.example
 
 import scalaprops._
