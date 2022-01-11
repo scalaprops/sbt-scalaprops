@@ -2,7 +2,7 @@ scalapropsWithScalaz
 
 scalapropsVersion := System.getProperty("scalaprops.version")
 
-crossScalaVersions := "2.11.12" :: "2.12.15" :: "2.13.7" :: Nil
+crossScalaVersions := "2.11.12" :: "2.12.15" :: "2.13.8" :: Nil
 
 scalacOptions ++= (
   "-deprecation" ::
