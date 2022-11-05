@@ -1,7 +1,7 @@
 > show scalapropsVersion
 > checkParallelExecution
 
-> + test:compile
+> + Test/compile
 > + test
 $ exists test1.txt
 $ exists test2.txt
