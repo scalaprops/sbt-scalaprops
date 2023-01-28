@@ -1,8 +1,4 @@
 > + test
-$ exists target/scala-2.11/src_managed/test/scalaprops/NativeTestMain.scala
-$ exec cat target/scala-2.11/src_managed/test/scalaprops/NativeTestMain.scala
-$ exists target/scala-2.11/sbt-scalaprops-native-test1-test-out
-
 $ exists target/scala-2.12/src_managed/test/scalaprops/NativeTestMain.scala
 $ exec cat target/scala-2.12/src_managed/test/scalaprops/NativeTestMain.scala
 $ exists target/scala-2.12/sbt-scalaprops-native-test1-test-out
@@ -17,14 +13,12 @@ $ exists target/scala-3.2.1/sbt-scalaprops-native-test1-test-out
 
 > set scalapropsNativeWarnEnv := WhenNotNativeEnv.NoWarn
 > + test
-$ exec cat target/scala-2.11/src_managed/test/scalaprops/NativeTestMain.scala
 $ exec cat target/scala-2.12/src_managed/test/scalaprops/NativeTestMain.scala
 $ exec cat target/scala-2.13/src_managed/test/scalaprops/NativeTestMain.scala
 $ exec cat target/scala-3.2.1/src_managed/test/scalaprops/NativeTestMain.scala
 
 > set scalapropsNativeWarnEnv := WhenNotNativeEnv.PrintWarn
 > + test
-$ exec cat target/scala-2.11/src_managed/test/scalaprops/NativeTestMain.scala
 $ exec cat target/scala-2.12/src_managed/test/scalaprops/NativeTestMain.scala
 $ exec cat target/scala-2.13/src_managed/test/scalaprops/NativeTestMain.scala
 $ exec cat target/scala-3.2.1/src_managed/test/scalaprops/NativeTestMain.scala
@@ -32,5 +26,5 @@ $ exec cat target/scala-3.2.1/src_managed/test/scalaprops/NativeTestMain.scala
 # TODO
 # > set Test / selectMainClass := Some("false.if.else")
 # > test
-# $ exists target/scala-2.11/src_managed/test/false/if/else.scala
-# $ exec cat target/scala-2.11/src_managed/test/false/if/else.scala
+# $ exists target/scala-2.12/src_managed/test/false/if/else.scala
+# $ exec cat target/scala-2.12/src_managed/test/false/if/else.scala

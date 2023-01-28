@@ -2,11 +2,11 @@ scalapropsSettings
 
 scalapropsVersion := System.getProperty("scalaprops.version")
 
-val scala211 = "2.11.12"
+val scala212 = "2.12.17"
 
-scalaVersion := scala211
+scalaVersion := scala212
 
-crossScalaVersions := scala211 :: "2.12.17" :: "2.13.10" :: Nil
+crossScalaVersions := scala212 :: "2.13.10" :: Nil
 
 TaskKey[Unit]("checkParallelExecution") := {
   assert((Test / parallelExecution).value == false)
