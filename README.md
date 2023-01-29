@@ -10,7 +10,7 @@ __powerful__ means not only test class names but also test method names and [par
 `project/scalaprops.sbt`
 
 ```scala
-addSbtPlugin("com.github.scalaprops" % "sbt-scalaprops" % "0.4.3")
+addSbtPlugin("com.github.scalaprops" % "sbt-scalaprops" % "0.4.4")
 ```
 
 #### JVM
@@ -53,7 +53,7 @@ libraryDependencies += "com.github.scalaprops" %%% "scalaprops-scalaz" % scalapr
 ```
 
 
-- [API Documentation](https://oss.sonatype.org/service/local/repositories/releases/archive/com/github/scalaprops/sbt-scalaprops_2.12_1.0/0.4.3/sbt-scalaprops-0.4.3-javadoc.jar/!/scalaprops/index.html)
+- [API Documentation](https://oss.sonatype.org/service/local/repositories/releases/archive/com/github/scalaprops/sbt-scalaprops_2.12_1.0/0.4.4/sbt-scalaprops-0.4.4-javadoc.jar/!/scalaprops/index.html)
 
 
 ![screencast](https://raw.githubusercontent.com/scalaprops/sbt-scalaprops/master/screencast.gif)
