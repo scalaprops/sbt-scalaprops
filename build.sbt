@@ -3,11 +3,11 @@ import ReleaseStateTransformations._
 
 scriptedBatchExecution := false
 
-publishTo := Some(
+publishTo := (
   if (isSnapshot.value)
-    Opts.resolver.sonatypeSnapshots
+    None
   else
-    Opts.resolver.sonatypeStaging
+    Some(Opts.resolver.sonatypeStaging)
 )
 
 val tagName = Def.setting {
