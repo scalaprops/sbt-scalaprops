@@ -8,11 +8,21 @@ object KeywordPlugin extends AutoPlugin {
   lazy val scalaKeywords = TaskKey[Set[String]]("scala-keywords")
   lazy val generateKeywords = TaskKey[File]("generateKeywords")
 
+  val scala3keywords = Set[String](
+    "enum",
+    "export",
+    "given",
+    "then",
+  )
+
   def getScalaKeywords: Set[String] =
     {
       val g = new scala.tools.nsc.Global(new scala.tools.nsc.Settings)
       g.nme.keywords.map(_.toString)
-    }
+    } ++ scala3keywords
+
+  assert(getScalaKeywords.size == 55)
+
   def writeScalaKeywords(base: File, keywords: Set[String]): File =
     {
       val init = keywords.toList.sortBy(identity).map(tn => '"' + tn + '"').mkString("Set(", ", ", ")")
