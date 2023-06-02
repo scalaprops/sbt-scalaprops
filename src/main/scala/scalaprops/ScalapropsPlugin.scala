@@ -65,11 +65,11 @@ object ScalapropsPlugin extends AutoPlugin {
             val instance = clazz.getField("MODULE$").get(null)
             val method = clazz.getMethod("testFieldNames", classOf[Class[_]])
             val testNames = (Test / definedTestNames).value
-            testNames.map { testName =>
+            testNames.iterator.map { testName =>
               val testClass = Class.forName(testName, true, loader)
               val testFields = method.invoke(instance, testClass).asInstanceOf[Array[String]]
               testName -> testFields.toSet
-            }(collection.breakOut)
+            }.toMap
           case Left(e) =>
             streams.value.log.debug(runnerName + " could not found")
             Map.empty
