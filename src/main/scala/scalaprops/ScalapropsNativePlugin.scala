@@ -122,7 +122,7 @@ object ScalapropsNativePlugin extends AutoPlugin {
     Seq(
       scalapropsNativeWarnEnv := WhenNotNativeEnv.ThrowError
     ),
-    inConfig(ScalapropsNativeTest)(ScalaNativePluginInternal.scalaNativeConfigSettings("-scalaprops")),
+    inConfig(ScalapropsNativeTest)(ScalaNativePluginInternal.scalaNativeConfigSettings(testConfig = true)),
     inConfig(ScalapropsNativeTest)(scalapropsNativeTestSettings),
     inConfig(Test)(Seq(
       test := {
