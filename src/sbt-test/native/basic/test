@@ -1,15 +1,15 @@
 > + test
 $ exists target/scala-2.12/src_managed/test/scalaprops/NativeTestMain.scala
 $ exec cat target/scala-2.12/src_managed/test/scalaprops/NativeTestMain.scala
-$ exists target/scala-2.12/sbt-scalaprops-native-test1-test-out
+$ exists target/scala-2.12/sbt-scalaprops-native-test1-test
 
 $ exists target/scala-2.13/src_managed/test/scalaprops/NativeTestMain.scala
 $ exec cat target/scala-2.13/src_managed/test/scalaprops/NativeTestMain.scala
-$ exists target/scala-2.13/sbt-scalaprops-native-test1-test-out
+$ exists target/scala-2.13/sbt-scalaprops-native-test1-test
 
 $ exists target/scala-3.3.1/src_managed/test/scalaprops/NativeTestMain.scala
 $ exec cat target/scala-3.3.1/src_managed/test/scalaprops/NativeTestMain.scala
-$ exists target/scala-3.3.1/sbt-scalaprops-native-test1-test-out
+$ exists target/scala-3.3.1/sbt-scalaprops-native-test1-test
 
 > set scalapropsNativeWarnEnv := WhenNotNativeEnv.NoWarn
 > + test
