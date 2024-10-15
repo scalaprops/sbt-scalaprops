@@ -124,8 +124,3 @@ releaseProcess := Seq[ReleaseStep](
   UpdateReadme.updateReadmeProcess,
   pushChanges
 )
-
-credentials ++= PartialFunction.condOpt(sys.env.get("SONATYPE_USER") -> sys.env.get("SONATYPE_PASSWORD")){
-  case (Some(user), Some(password)) =>
-    Credentials("Sonatype Nexus Repository Manager", "oss.sonatype.org", user, password)
-}.toList
