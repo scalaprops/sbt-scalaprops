@@ -21,13 +21,53 @@ val tagOrHash = Def.setting {
 
 scalapropsSettings
 
-libraryDependencies += Defaults.sbtPluginExtra(
-  m = "org.scala-native" % "sbt-scala-native" % nativeVersion % "provided",
-  sbtV = (pluginCrossBuild / sbtBinaryVersion).value,
-  scalaV = (pluginCrossBuild / scalaBinaryVersion).value
-)
+crossScalaVersions += "3.3.3"
+
+libraryDependencies ++= {
+  scalaBinaryVersion.value match {
+    case "3" =>
+      Nil
+    case _ =>
+      Seq(
+        Defaults.sbtPluginExtra(
+          m = "org.scala-native" % "sbt-scala-native" % nativeVersion % "provided",
+          sbtV = (pluginCrossBuild / sbtBinaryVersion).value,
+          scalaV = (pluginCrossBuild / scalaBinaryVersion).value
+        )
+      )
+  }
+}
 
 scalapropsVersion := "0.9.1"
+
+pluginCrossBuild / sbtVersion := {
+  scalaBinaryVersion.value match {
+    case "2.12" =>
+      (pluginCrossBuild / sbtVersion).value
+    case _ =>
+      "2.0.0-M2"
+  }
+}
+
+TaskKey[Unit]("scriptedTestSbt2") := Def.taskDyn {
+  val values = sbtTestDirectory.value
+    .listFiles(_.isDirectory)
+    .flatMap { dir1 =>
+      dir1.listFiles(_.isDirectory).map { dir2 =>
+        dir1.getName -> dir2.getName
+      }
+    }
+    .toList
+  val args = values.filter {
+    case ("native", _) => false
+    case _ => true
+  }.collect { case (x1, x2) =>
+    s"${x1}/${x2}"
+  }
+  val arg = args.mkString(" ", " ", "")
+  streams.value.log.info("scripted" + arg)
+  scripted.toTask(arg)
+}.value
 
 enablePlugins(SbtPlugin)
 
@@ -99,11 +139,21 @@ pomExtra :=
 scalacOptions ++= Seq(
   "-deprecation",
   "-unchecked",
-  "-Xlint",
   "-language:existentials",
-  "-language:higherKinds",
   "-language:implicitConversions",
 )
+
+scalacOptions ++= {
+  scalaBinaryVersion.value match {
+    case "3" =>
+      Nil
+    case _ =>
+      Seq(
+        "-language:higherKinds",
+        "-Xlint",
+      )
+  }
+}
 
 releaseTagName := tagName.value
 
@@ -111,12 +161,12 @@ releaseProcess := Seq[ReleaseStep](
   checkSnapshotDependencies,
   inquireVersions,
   runClean,
-  releaseStepCommandAndRemaining("^ test"),
+  releaseStepCommandAndRemaining("+ test"),
   setReleaseVersion,
   commitReleaseVersion,
   UpdateReadme.updateReadmeProcess,
   tagRelease,
-  releaseStepCommandAndRemaining("^ publishSigned"),
+  releaseStepCommandAndRemaining("+ publishSigned"),
   setNextVersion,
   commitNextVersion,
   releaseStepCommand("sonatypeReleaseAll"),
