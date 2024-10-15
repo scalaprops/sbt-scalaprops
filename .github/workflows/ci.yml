@@ -26,6 +26,8 @@ jobs:
         git show --oneline --check
     - run: sbt
            -v
+           scalafmtSbtCheck
+           "+ scalafmtCheckAll"
            $(if [[ "${{matrix.sbt_version}}" != "" ]] ; then echo "^^${{matrix.sbt_version}}" ; fi)
            test
            scripted

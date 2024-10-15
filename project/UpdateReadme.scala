@@ -1,4 +1,4 @@
-import sbt._, Keys._
+import sbt.*, Keys.*
 import sbtrelease.ReleasePlugin.autoImport.ReleaseStep
 import sbtrelease.Git
 
@@ -11,19 +11,23 @@ object UpdateReadme {
     val scalaV = "2.12"
     val sbtV = "1.0"
     val v = extracted get version
-    val org =  extracted get organization
+    val org = extracted get organization
     val n = extracted get name
-    val snapshotOrRelease = if(extracted get isSnapshot) "snapshots" else "releases"
+    val snapshotOrRelease = if (extracted get isSnapshot) "snapshots" else "releases"
     val readme = "README.md"
     val readmeFile = file(readme)
-    val newReadme = Predef.augmentString(IO.read(readmeFile)).lines.map{ line =>
-      val matchReleaseOrSnapshot = line.contains("SNAPSHOT") == v.contains("SNAPSHOT")
-      if(line.startsWith("addSbtPlugin") && matchReleaseOrSnapshot){
-        s"""addSbtPlugin("${org}" % "${n}" % "$v")"""
-      }else if(line.contains(sonatypeURL) && matchReleaseOrSnapshot){
-        s"- [API Documentation](${sonatypeURL}${snapshotOrRelease}/archive/${org.replace('.','/')}/${n}_${scalaV}_${sbtV}/${v}/${n}-${v}-javadoc.jar/!/scalaprops/index.html)"
-      }else line
-    }.mkString("", "\n", "\n")
+    val newReadme = Predef
+      .augmentString(IO.read(readmeFile))
+      .lines
+      .map { line =>
+        val matchReleaseOrSnapshot = line.contains("SNAPSHOT") == v.contains("SNAPSHOT")
+        if (line.startsWith("addSbtPlugin") && matchReleaseOrSnapshot) {
+          s"""addSbtPlugin("${org}" % "${n}" % "$v")"""
+        } else if (line.contains(sonatypeURL) && matchReleaseOrSnapshot) {
+          s"- [API Documentation](${sonatypeURL}${snapshotOrRelease}/archive/${org.replace('.', '/')}/${n}_${scalaV}_${sbtV}/${v}/${n}-${v}-javadoc.jar/!/scalaprops/index.html)"
+        } else line
+      }
+      .mkString("", "\n", "\n")
     IO.write(readmeFile, newReadme)
     val git = new Git(extracted get baseDirectory)
     git.add(readme) ! state.log

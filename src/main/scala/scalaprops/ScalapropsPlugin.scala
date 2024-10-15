@@ -1,23 +1,24 @@
 package scalaprops
 
-import sbt._, Keys._
+import sbt.*, Keys.*
 import sbt.complete.{DefaultParsers, Parser}
-import sbt.complete.DefaultParsers._
-import sjsonnew.BasicJsonProtocol._
+import sbt.complete.DefaultParsers.*
+import sjsonnew.BasicJsonProtocol.*
 import scala.reflect.NameTransformer
 
 object ScalapropsPlugin extends AutoPlugin {
 
-  private[this] val LongBasic = mapOrFail('-'.? ~ Digit.+){
-    case (neg, digits) =>
-      (neg.toSeq ++ digits).mkString.toLong
+  private[this] val LongBasic = mapOrFail('-'.? ~ Digit.+) { case (neg, digits) =>
+    (neg.toSeq ++ digits).mkString.toLong
   }
 
-  private[this] def param[A](p: Parser[A], typeName: String): (String, (ScalapropsTest.Param, A) => ScalapropsTest.Param) => Parser[ScalapropsTest.Param] = {
-    (key, f) =>
-      Space ~> token(("--" + key + "=") ~> token(p, s"<${key}: ${typeName}>")).map { x =>
-        f(ScalapropsTest.Param.Default, x)
-      }
+  private[this] def param[A](
+    p: Parser[A],
+    typeName: String
+  ): (String, (ScalapropsTest.Param, A) => ScalapropsTest.Param) => Parser[ScalapropsTest.Param] = { (key, f) =>
+    Space ~> token(("--" + key + "=") ~> token(p, s"<${key}: ${typeName}>")).map { x =>
+      f(ScalapropsTest.Param.Default, x)
+    }
   }
   private[this] val long = param(LongBasic, "Long")
   private[this] val uint = param(DefaultParsers.NatBasic, "Unsigned Int")
@@ -36,18 +37,18 @@ object ScalapropsPlugin extends AutoPlugin {
     uint("timeout", (p, x) => p.copy(timeout = Some(x)))
 
   private[this] val ParamsParser: Parser[ScalapropsTest.Param] =
-    Parser.oneOf(Seq(Seed, MinSuccessful, MaxDiscarded, MinSize, MaxSize, Timeout)).*.map(
-      params => params.foldLeft(ScalapropsTest.Param.Default)(_ merge _)
-    )
+    Parser
+      .oneOf(Seq(Seed, MinSuccessful, MaxDiscarded, MinSize, MaxSize, Timeout))
+      .*
+      .map(params => params.foldLeft(ScalapropsTest.Param.Default)(_ merge _))
 
   private[this] val defaultParser: Parser[ScalapropsTest] = {
     (
       Space ~> token(StringBasic, _ => true) ~
-     (Space ~> token(StringBasic, _ => true)).* ~
-      ParamsParser
-    ).map{
-      case classNames Tuple2 methodNames Tuple2 param =>
-        ScalapropsTest(classNames, methodNames, param)
+        (Space ~> token(StringBasic, _ => true)).* ~
+        ParamsParser
+    ).map { case classNames Tuple2 methodNames Tuple2 param =>
+      ScalapropsTest(classNames, methodNames, param)
     }
   }
 
@@ -56,14 +57,14 @@ object ScalapropsPlugin extends AutoPlugin {
     val scalapropsOnly = InputKey[Unit]("scalapropsOnly")
     val scalapropsVersion = SettingKey[String]("scalapropsVersion")
 
-    val scalapropsCoreSettings: Seq[Setting[_]] = Seq(
+    val scalapropsCoreSettings: Seq[Setting[?]] = Seq(
       scalapropsTestNames := {
         val loader = (Test / testLoader).value
         val runnerName = "scalaprops.ScalapropsRunner"
         getSingletonInstance(runnerName, loader) match {
           case Right(clazz) =>
             val instance = clazz.getField("MODULE$").get(null)
-            val method = clazz.getMethod("testFieldNames", classOf[Class[_]])
+            val method = clazz.getMethod("testFieldNames", classOf[Class[?]])
             val testNames = (Test / definedTestNames).value
             testNames.iterator.map { testName =>
               val testClass = Class.forName(testName, true, loader)
@@ -80,27 +81,30 @@ object ScalapropsPlugin extends AutoPlugin {
       }.value,
       testFrameworks += new TestFramework("scalaprops.ScalapropsFramework"),
       Test / parallelExecution := false,
-      scalapropsOnly := InputTask.createDyn(
-        Defaults.loadForParser(scalapropsTestNames)(
-          (state, classes) => classes.fold(defaultParser)(x => createParser(x) | defaultParser)
-        )
-      ) {
-        Def.task { (test: ScalapropsTest) =>
-          (Test / testOnly).toTask((" " :: test.className :: "--" :: "--only" :: test.methodNames.toList).mkString(" "))
+      scalapropsOnly := InputTask
+        .createDyn(
+          Defaults.loadForParser(scalapropsTestNames)((state, classes) =>
+            classes.fold(defaultParser)(x => createParser(x) | defaultParser)
+          )
+        ) {
+          Def.task { (test: ScalapropsTest) =>
+            (Test / testOnly)
+              .toTask((" " :: test.className :: "--" :: "--only" :: test.methodNames.toList).mkString(" "))
+          }
         }
-      }.evaluated
+        .evaluated
     )
 
-    val scalapropsSettings: Seq[Setting[_]] = scalapropsCoreSettings ++ Seq(
+    val scalapropsSettings: Seq[Setting[?]] = scalapropsCoreSettings ++ Seq(
       libraryDependencies += "com.github.scalaprops" %% "scalaprops" % scalapropsVersion.value % "test"
     )
 
-    val scalapropsWithScalaz: Seq[Setting[_]] = scalapropsSettings ++ Seq(
+    val scalapropsWithScalaz: Seq[Setting[?]] = scalapropsSettings ++ Seq(
       libraryDependencies += "com.github.scalaprops" %% "scalaprops-scalaz" % scalapropsVersion.value % "test"
     )
 
     @deprecated("use scalapropsWithScalaz instead", "0.3.1")
-    val scalapropsWithScalazlaws: Seq[Setting[_]] = scalapropsWithScalaz
+    val scalapropsWithScalazlaws: Seq[Setting[?]] = scalapropsWithScalaz
   }
 
   final case class ScalapropsTest(
@@ -133,18 +137,22 @@ object ScalapropsPlugin extends AutoPlugin {
   }
 
   private[this] def createParser(tests: Map[String, Set[String]]): Parser[ScalapropsTest] = {
-    tests.filter(_._2.nonEmpty).map { case (k, v) =>
-      val (noChange, changed) = v.partition(n => NameTransformer.decode(n) == n)
-      val all = noChange ++ changed.map(n => "\"" + NameTransformer.decode(n) + "\"")
-      val parser = token(k) ~ distinctParser(all) ~ ParamsParser
-      parser.map{
-        case className Tuple2 methodName Tuple2 param =>
+    tests
+      .filter(_._2.nonEmpty)
+      .map { case (k, v) =>
+        val (noChange, changed) = v.partition(n => NameTransformer.decode(n) == n)
+        val all = noChange ++ changed.map(n => "\"" + NameTransformer.decode(n) + "\"")
+        val parser = token(k) ~ distinctParser(all) ~ ParamsParser
+        parser.map { case className Tuple2 methodName Tuple2 param =>
           ScalapropsTest(className, methodName, param)
+        }
       }
-    }.reduceOption(_ | _).map(Space ~> _).getOrElse(defaultParser)
+      .reduceOption(_ | _)
+      .map(Space ~> _)
+      .getOrElse(defaultParser)
   }
 
-  private[this] def getSingletonInstance(objectName: String, loader: ClassLoader): Either[Throwable, Class[_]] =
+  private[this] def getSingletonInstance(objectName: String, loader: ClassLoader): Either[Throwable, Class[?]] =
     try {
       Right(Class.forName(objectName + "$", true, loader))
     } catch {

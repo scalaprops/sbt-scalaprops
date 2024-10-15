@@ -38,9 +38,7 @@ scriptedLaunchOpts ++= {
     import scala.collection.JavaConverters._
     java.lang.management.ManagementFactory.getRuntimeMXBean.getInputArguments.asScala.toList
   }
-  javaVmArgs.filter(
-    a => Seq("-Xmx", "-Xms", "-XX", "-Dsbt.log.noformat").exists(a.startsWith)
-  )
+  javaVmArgs.filter(a => Seq("-Xmx", "-Xms", "-XX", "-Dsbt.log.noformat").exists(a.startsWith))
 }
 
 scriptedLaunchOpts ++= Seq(
@@ -77,8 +75,10 @@ pomPostProcess := { node =>
 
 (Compile / doc / scalacOptions) ++= {
   Seq(
-    "-sourcepath", (LocalRootProject / baseDirectory).value.getAbsolutePath,
-    "-doc-source-url", s"https://github.com/scalaprops/sbt-scalaprops/tree/${tagOrHash.value}€{FILE_PATH}.scala"
+    "-sourcepath",
+    (LocalRootProject / baseDirectory).value.getAbsolutePath,
+    "-doc-source-url",
+    s"https://github.com/scalaprops/sbt-scalaprops/tree/${tagOrHash.value}€{FILE_PATH}.scala"
   )
 }
 
@@ -96,14 +96,13 @@ pomExtra :=
     <tag>{tagOrHash.value}</tag>
   </scm>
 
-scalacOptions ++= (
-  "-deprecation" ::
-  "-unchecked" ::
-  "-Xlint" ::
-  "-language:existentials" ::
-  "-language:higherKinds" ::
-  "-language:implicitConversions" ::
-  Nil
+scalacOptions ++= Seq(
+  "-deprecation",
+  "-unchecked",
+  "-Xlint",
+  "-language:existentials",
+  "-language:higherKinds",
+  "-language:implicitConversions",
 )
 
 releaseTagName := tagName.value

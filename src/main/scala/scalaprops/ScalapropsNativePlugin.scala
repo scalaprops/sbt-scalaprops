@@ -1,11 +1,11 @@
 package scalaprops
 
-import sbt._
-import sbt.Keys._
-import ScalapropsPlugin.autoImport._
+import sbt.*
+import sbt.Keys.*
+import ScalapropsPlugin.autoImport.*
 import scala.reflect.NameTransformer
 import scala.scalanative.sbtplugin.ScalaNativePluginInternal
-import scala.scalanative.sbtplugin.ScalaNativePlugin.autoImport._
+import scala.scalanative.sbtplugin.ScalaNativePlugin.autoImport.*
 
 object ScalapropsNativePlugin extends AutoPlugin {
 
@@ -26,7 +26,7 @@ object ScalapropsNativePlugin extends AutoPlugin {
     lazy val scalapropsNativeSettings = ScalapropsNativePlugin.settings
   }
 
-  import autoImport._
+  import autoImport.*
 
   private[this] def escapeIfKeyword(s: String) = {
     if (ScalaKeywords.values.contains(s)) {
@@ -38,48 +38,48 @@ object ScalapropsNativePlugin extends AutoPlugin {
 
   private[this] lazy val scalapropsNativeTestSettings =
     Defaults.compileSettings ++
-    Defaults.testSettings ++ Seq(
-      classDirectory := (Test / classDirectory).value,
-      dependencyClasspath := (Test / dependencyClasspath).value,
-      sourceGenerators += Def.task {
-        val testNames = (Test / scalapropsTestNames).value.toList.sortBy(_._1).filter(_._2.nonEmpty)
-        val tests = testNames.flatMap{
-          case (obj, methods) =>
+      Defaults.testSettings ++ Seq(
+        classDirectory := (Test / classDirectory).value,
+        dependencyClasspath := (Test / dependencyClasspath).value,
+        sourceGenerators += Def.task {
+          val testNames = (Test / scalapropsTestNames).value.toList.sortBy(_._1).filter(_._2.nonEmpty)
+          val tests = testNames.flatMap { case (obj, methods) =>
             val o = obj.split('.').map(escapeIfKeyword).mkString("_root_.", ".", "")
-            methods.toList.sorted.map{ m =>
-              val methodName = if (NameTransformer.decode(m) == m) escapeIfKeyword(m) else s"`${NameTransformer.decode(m)}`"
+            methods.toList.sorted.map { m =>
+              val methodName =
+                if (NameTransformer.decode(m) == m) escapeIfKeyword(m) else s"`${NameTransformer.decode(m)}`"
               s"""      ("$m", convert(${o}.${methodName}))"""
             }.mkString(
               s"""    test(\n      "$obj",\n      $o,\n      xs,\n      a,\n""",
               ",\n",
               "\n    )\n\n"
             )
-        }.mkString
+          }.mkString
 
-        val mainClassFullName = "scalaprops.NativeTestMain"
+          val mainClassFullName = "scalaprops.NativeTestMain"
 
-        val (mainPackage, mainClass) = mainClassFullName.split('.').toList match {
-          case init :+ last =>
-            (Some(init), last)
-          case clazz :: Nil =>
-            (None, clazz)
-          case Nil =>
-            sys.error("invalid native test main class name " + mainClassFullName)
-        }
+          val (mainPackage, mainClass) = mainClassFullName.split('.').toList match {
+            case init :+ last =>
+              (Some(init), last)
+            case clazz :: Nil =>
+              (None, clazz)
+            case Nil =>
+              sys.error("invalid native test main class name " + mainClassFullName)
+          }
 
-        val pack = mainPackage.fold("")("package " + _.map(escapeIfKeyword).mkString(".") + "\n\n")
+          val pack = mainPackage.fold("")("package " + _.map(escapeIfKeyword).mkString(".") + "\n\n")
 
-        val warn = scalapropsNativeWarnEnv.value match {
-          case WhenNotNativeEnv.NoWarn =>
-            ""
-          case WhenNotNativeEnv.PrintWarn =>
-            "warnIfNotNativeEnvironment()"
-          case WhenNotNativeEnv.ThrowError =>
-            "throwIfNotNativeEnvironment()"
-        }
+          val warn = scalapropsNativeWarnEnv.value match {
+            case WhenNotNativeEnv.NoWarn =>
+              ""
+            case WhenNotNativeEnv.PrintWarn =>
+              "warnIfNotNativeEnvironment()"
+            case WhenNotNativeEnv.ThrowError =>
+              "throwIfNotNativeEnvironment()"
+          }
 
-        val src = if (testNames.nonEmpty) {
-          s"""${pack}object ${escapeIfKeyword(mainClass)} extends _root_.scalaprops.NativeTestHelper {
+          val src = if (testNames.nonEmpty) {
+            s"""${pack}object ${escapeIfKeyword(mainClass)} extends _root_.scalaprops.NativeTestHelper {
           |  def main(args: _root_.scala.Array[_root_.java.lang.String]): _root_.scala.Unit = {
           |    ${warn}
           |    val xs = _root_.scalaprops.Arguments.objects(args.toList)
@@ -89,57 +89,57 @@ object ScalapropsNativePlugin extends AutoPlugin {
           |  }
           |}
           |""".stripMargin
-        } else {
-          s"""${pack}object ${escapeIfKeyword(mainClass)} {
+          } else {
+            s"""${pack}object ${escapeIfKeyword(mainClass)} {
           |  def main(args: _root_.scala.Array[_root_.java.lang.String]): _root_.scala.Unit = {
           |  }
           |}
           |""".stripMargin
-        }
+          }
 
-        val dir = (Test / sourceManaged).value
-        val f = mainPackage.toList.flatten.foldLeft(dir)(_ / _) / (mainClass + ".scala")
-        IO.write(f, src)
-        Seq(f)
-      }.taskValue,
-      (nativeLink / artifactPath) := {
-        crossTarget.value / (moduleName.value + "-test-out")
-      },
-      definedTests := (Test / definedTests).value
-    )
+          val dir = (Test / sourceManaged).value
+          val f = mainPackage.toList.flatten.foldLeft(dir)(_ / _) / (mainClass + ".scala")
+          IO.write(f, src)
+          Seq(f)
+        }.taskValue,
+        (nativeLink / artifactPath) := {
+          crossTarget.value / (moduleName.value + "-test-out")
+        },
+        definedTests := (Test / definedTests).value
+      )
 
   private[this] def runTest(binary: File, options: Seq[String]) = {
-    val exitCode = scala.sys.process.Process(binary.getAbsolutePath +: options, None)
-      .run(connectInput = true)
-      .exitValue
+    val exitCode = scala.sys.process.Process(binary.getAbsolutePath +: options, None).run(connectInput = true).exitValue
 
     if (exitCode != 0) {
       sys.error("Nonzero exit code: " + exitCode)
     }
   }
 
-  lazy val settings: Seq[Def.Setting[_]] = Seq(
+  lazy val settings: Seq[Def.Setting[?]] = Seq(
     Seq(
       scalapropsNativeWarnEnv := WhenNotNativeEnv.ThrowError
     ),
     inConfig(ScalapropsNativeTest)(ScalaNativePluginInternal.scalaNativeConfigSettings(testConfig = true)),
     inConfig(ScalapropsNativeTest)(scalapropsNativeTestSettings),
-    inConfig(Test)(Seq(
-      test := {
-        val binary = (ScalapropsNativeTest / nativeLink).value
-        runTest(binary, Nil)
-      },
-      testOnly := {
-        import sjsonnew.BasicJsonProtocol._
-        val parser = loadForParser(definedTestNames)((s, i) => Defaults.testOnlyParser(s, i getOrElse Nil))
-        Def.inputTaskDyn {
-          val (selected, frameworkOptions) = parser.parsed
-          Def.task {
-            val binary = (ScalapropsNativeTest / nativeLink).value
-            runTest(binary, selected ++ frameworkOptions)
+    inConfig(Test)(
+      Seq(
+        test := {
+          val binary = (ScalapropsNativeTest / nativeLink).value
+          runTest(binary, Nil)
+        },
+        testOnly := {
+          import sjsonnew.BasicJsonProtocol.*
+          val parser = loadForParser(definedTestNames)((s, i) => Defaults.testOnlyParser(s, i getOrElse Nil))
+          Def.inputTaskDyn {
+            val (selected, frameworkOptions) = parser.parsed
+            Def.task {
+              val binary = (ScalapropsNativeTest / nativeLink).value
+              runTest(binary, selected ++ frameworkOptions)
+            }
           }
-        }
-      }.evaluated
-    ))
+        }.evaluated
+      )
+    )
   ).flatten
 }
