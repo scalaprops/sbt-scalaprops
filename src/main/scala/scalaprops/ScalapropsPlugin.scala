@@ -1,6 +1,9 @@
 package scalaprops
 
-import sbt.*, Keys.*
+// format: off
+import sbt.{given, *}
+// format: on
+import sbt.Keys.*
 import sbt.complete.{DefaultParsers, Parser}
 import sbt.complete.DefaultParsers.*
 import sjsonnew.BasicJsonProtocol.*

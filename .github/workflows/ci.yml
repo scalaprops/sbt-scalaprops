@@ -28,7 +28,9 @@ jobs:
            -v
            scalafmtSbtCheck
            "+ scalafmtCheckAll"
-           $(if [[ "${{matrix.sbt_version}}" != "" ]] ; then echo "^^${{matrix.sbt_version}}" ; fi)
            test
            scripted
+           "++ 3.x"
+           test
+           scriptedTestSbt2
     - run: rm -rf "$HOME/.ivy2/local" || true
