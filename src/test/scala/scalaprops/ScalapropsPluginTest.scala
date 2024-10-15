@@ -10,11 +10,12 @@ object ScalapropsPluginTest extends Scalaprops {
     val methodName = "createParser"
     val methods = clazz.getDeclaredMethods
     def methodNames = methods.map(_.getName).toList
-    val method = methods.find(_.getName endsWith methodName).getOrElse(sys.error("not found " + methodName + " in " + methodNames))
+    val method =
+      methods.find(_.getName endsWith methodName).getOrElse(sys.error("not found " + methodName + " in " + methodNames))
     method.invoke(obj, classes).asInstanceOf[Parser[ScalapropsPlugin.ScalapropsTest]]
   }
 
-  val parser = Property.forAll{
+  val parser = Property.forAll {
     val aaa = "com.example.AAA"
     val classes = Map(
       aaa -> Set("aa_xx_1", "aa_xx_2", "aa_yy"),
@@ -25,7 +26,7 @@ object ScalapropsPluginTest extends Scalaprops {
     def show(s: Set[String]) = s.map("\"" + _ + "\"").toList.sorted
 
     def test(input: String, completions: Set[String]) = {
-      val actual = input.foldLeft(p){_ derive _}.completions(0).get.map(_.display)
+      val actual = input.foldLeft(p) { _ derive _ }.completions(0).get.map(_.display)
       assert(actual == completions, s"\n${show(actual)}\n is not equals \n${show(completions)}")
     }
 
