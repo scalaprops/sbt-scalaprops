@@ -16,7 +16,7 @@ val tagOrHash = Def.setting {
 
 scalapropsSettings
 
-crossScalaVersions += "3.3.3"
+crossScalaVersions += "3.6.2"
 
 libraryDependencies ++= {
   scalaBinaryVersion.value match {
@@ -40,7 +40,7 @@ pluginCrossBuild / sbtVersion := {
     case "2.12" =>
       (pluginCrossBuild / sbtVersion).value
     case _ =>
-      "2.0.0-M2"
+      "2.0.0-M3"
   }
 }
 
