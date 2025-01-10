@@ -2,7 +2,7 @@ scalapropsSettings
 
 scalapropsVersion := System.getProperty("scalaprops.version")
 
-val scala212 = "2.12.20"
+val scala212 = "2.13.16"
 
 scalaVersion := scala212
 
@@ -14,12 +14,12 @@ TaskKey[Unit]("checkParallelExecution") := {
 
 scalacOptions ++= (
   "-deprecation" ::
-  "-unchecked" ::
-  "-Xlint" ::
-  "-language:existentials" ::
-  "-language:higherKinds" ::
-  "-language:implicitConversions" ::
-  Nil
+    "-unchecked" ::
+    "-Xlint" ::
+    "-language:existentials" ::
+    "-language:higherKinds" ::
+    "-language:implicitConversions" ::
+    Nil
 )
 
 TaskKey[Unit]("generateTest2") := {
