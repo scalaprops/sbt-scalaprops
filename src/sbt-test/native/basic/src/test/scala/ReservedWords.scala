@@ -1,6 +1,6 @@
 package `yield` {
 
-  import scalaprops._
+  import scalaprops.*
 
   package `else` {
     object `for` extends Scalaprops {

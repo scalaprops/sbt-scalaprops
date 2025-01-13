@@ -1,9 +1,9 @@
 package com.example
 
-import scalaprops._
-import scalaz._
-import scalaz.std.anyVal._
-import scalaz.std.tuple._
+import scalaprops.*
+import scalaz.*
+import scalaz.std.anyVal.*
+import scalaz.std.tuple.*
 
 object Test1 extends Scalaprops {
 
@@ -15,8 +15,8 @@ object Test1 extends Scalaprops {
       Equal.equalBy(p => (p.x, p.y))
 
     implicit def gen[A: Gen]: Gen[Point[A]] =
-      Gen[(A, A)].map{
-        case (x, y) => Point(x, y)
+      Gen[(A, A)].map { case (x, y) =>
+        Point(x, y)
       }
 
     implicit val functor: Functor[Point] =
