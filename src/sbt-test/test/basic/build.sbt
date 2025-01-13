@@ -12,14 +12,13 @@ TaskKey[Unit]("checkParallelExecution") := {
   assert((Test / parallelExecution).value == false)
 }
 
-scalacOptions ++= (
-  "-deprecation" ::
-  "-unchecked" ::
-  "-Xlint" ::
-  "-language:existentials" ::
-  "-language:higherKinds" ::
-  "-language:implicitConversions" ::
-  Nil
+scalacOptions ++= Seq(
+  "-deprecation",
+  "-unchecked",
+  "-Xlint",
+  "-language:existentials",
+  "-language:higherKinds",
+  "-language:implicitConversions",
 )
 
 TaskKey[Unit]("generateTest2") := {
