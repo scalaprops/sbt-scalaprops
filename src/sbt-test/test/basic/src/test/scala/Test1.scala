@@ -1,7 +1,7 @@
 package com.example
 
 import java.nio.charset.StandardCharsets
-import scalaprops._
+import scalaprops.*
 import java.nio.file.{Files, Paths}
 
 object Test1 extends Scalaprops {

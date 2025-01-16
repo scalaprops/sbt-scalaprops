@@ -1,4 +1,3 @@
 package com.example
 
-object EmptyTests extends scalaprops.Scalaprops {
-}
+object EmptyTests extends scalaprops.Scalaprops {}
