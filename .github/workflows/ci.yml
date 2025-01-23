@@ -21,6 +21,7 @@ jobs:
         java-version: ${{matrix.java}}
         distribution: temurin
     - uses: coursier/cache-action@v6
+    - uses: sbt/setup-sbt@v1
     - run: |
         git config core.whitespace tab-in-indent,trailing-space,space-before-tab,cr-at-eol
         git show --oneline --check
