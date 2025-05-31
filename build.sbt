@@ -3,7 +3,7 @@ import ReleaseStateTransformations._
 
 scriptedBatchExecution := false
 
-publishTo := sonatypePublishToBundle.value
+publishTo := (if (isSnapshot.value) None else localStaging.value)
 
 val tagName = Def.setting {
   s"v${if (releaseUseGlobalVersion.value) (ThisBuild / version).value else version.value}"
@@ -162,7 +162,7 @@ releaseProcess := Seq[ReleaseStep](
   UpdateReadme.updateReadmeProcess,
   tagRelease,
   releaseStepCommandAndRemaining("+ publishSigned"),
-  releaseStepCommandAndRemaining("sonatypeBundleRelease"),
+  releaseStepCommandAndRemaining("sonaRelease"),
   setNextVersion,
   commitNextVersion,
   UpdateReadme.updateReadmeProcess,
