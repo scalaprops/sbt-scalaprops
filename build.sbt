@@ -33,7 +33,7 @@ libraryDependencies ++= {
   }
 }
 
-scalapropsVersion := "0.9.1"
+scalapropsVersion := "0.10.0"
 
 pluginCrossBuild / sbtVersion := {
   scalaBinaryVersion.value match {
