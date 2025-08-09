@@ -8,6 +8,7 @@ import sbt.complete.{DefaultParsers, Parser}
 import sbt.complete.DefaultParsers.*
 import sjsonnew.BasicJsonProtocol.*
 import scala.reflect.NameTransformer
+import scalaprops.ScalapropsCompat.*
 
 object ScalapropsPlugin extends AutoPlugin {
 
@@ -61,7 +62,7 @@ object ScalapropsPlugin extends AutoPlugin {
     val scalapropsVersion = SettingKey[String]("scalapropsVersion")
 
     val scalapropsCoreSettings: Seq[Setting[?]] = Seq(
-      scalapropsTestNames := {
+      scalapropsTestNames := Def.uncached {
         val loader = (Test / testLoader).value
         val runnerName = "scalaprops.ScalapropsRunner"
         getSingletonInstance(runnerName, loader) match {

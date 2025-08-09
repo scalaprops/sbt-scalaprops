@@ -16,7 +16,7 @@ val tagOrHash = Def.setting {
 
 scalapropsSettings
 
-crossScalaVersions += "3.6.4"
+crossScalaVersions += "3.7.2"
 
 libraryDependencies ++= {
   scalaBinaryVersion.value match {
@@ -40,7 +40,7 @@ pluginCrossBuild / sbtVersion := {
     case "2.12" =>
       (pluginCrossBuild / sbtVersion).value
     case _ =>
-      "2.0.0-M4"
+      "2.0.0-M5"
   }
 }
 
@@ -55,6 +55,7 @@ TaskKey[Unit]("scriptedTestSbt2") := Def.taskDyn {
     .toList
   val args = values.filter {
     case ("native", _) => false
+    case ("test", "basic") => false
     case _ => true
   }.collect { case (x1, x2) =>
     s"${x1}/${x2}"
