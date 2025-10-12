@@ -78,7 +78,6 @@ scriptedLaunchOpts ++= {
 }
 
 scriptedLaunchOpts ++= Seq(
-  "-Dscala-native.version=" + nativeVersion,
   "-Dplugin.version=" + version.value,
   "-Dscala-native.version=" + nativeVersion,
   "-Dscalaprops.version=" + scalapropsVersion.value
