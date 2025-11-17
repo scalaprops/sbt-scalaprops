@@ -2,7 +2,7 @@ scalapropsSettings
 
 scalapropsVersion := System.getProperty("scalaprops.version")
 
-val scala212 = "2.12.20"
+val scala212 = "2.13.18"
 
 scalaVersion := scala212
 
