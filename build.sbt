@@ -16,7 +16,7 @@ val tagOrHash = Def.setting {
 
 scalapropsSettings
 
-crossScalaVersions += "3.8.2-RC3"
+crossScalaVersions += "3.8.1"
 
 libraryDependencies ++= {
   scalaBinaryVersion.value match {
