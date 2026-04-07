@@ -23,5 +23,3 @@ scalacOptions ++= Seq(
   "-language:higherKinds",
   "-language:implicitConversions",
 )
-
-evictionErrorLevel := Level.Warn
