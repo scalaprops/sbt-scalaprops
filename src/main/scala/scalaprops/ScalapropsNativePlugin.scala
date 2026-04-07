@@ -6,6 +6,7 @@ import ScalapropsPlugin.autoImport.*
 import scala.reflect.NameTransformer
 import scala.scalanative.sbtplugin.ScalaNativePluginInternal
 import scala.scalanative.sbtplugin.ScalaNativePlugin.autoImport.*
+import scalaprops.ScalapropsCompat.*
 
 object ScalapropsNativePlugin extends AutoPlugin {
 
@@ -40,7 +41,7 @@ object ScalapropsNativePlugin extends AutoPlugin {
     Defaults.compileSettings ++
       Defaults.testSettings ++ Seq(
         classDirectory := (Test / classDirectory).value,
-        dependencyClasspath := (Test / dependencyClasspath).value,
+        dependencyClasspath := Def.uncached((Test / dependencyClasspath).value),
         sourceGenerators += Def.task {
           val testNames = (Test / scalapropsTestNames).value.toList.sortBy(_._1).filter(_._2.nonEmpty)
           val tests = testNames.flatMap { case (obj, methods) =>
@@ -103,7 +104,10 @@ object ScalapropsNativePlugin extends AutoPlugin {
           Seq(f)
         }.taskValue,
         (nativeLink / artifactPath) := {
-          crossTarget.value / (moduleName.value + "-test-out")
+          ScalapropsCompat.fileToVirtualFileRef(
+            crossTarget.value / (moduleName.value + "-test-out"),
+            fileConverter.value
+          )
         },
         definedTests := (Test / definedTests).value
       )
@@ -114,6 +118,7 @@ object ScalapropsNativePlugin extends AutoPlugin {
     if (exitCode != 0) {
       sys.error("Nonzero exit code: " + exitCode)
     }
+    ScalapropsCompat.testResult
   }
 
   lazy val settings: Seq[Def.Setting[?]] = Seq(
@@ -125,7 +130,10 @@ object ScalapropsNativePlugin extends AutoPlugin {
     inConfig(Test)(
       Seq(
         test := {
-          val binary = (ScalapropsNativeTest / nativeLink).value
+          val binary = ScalapropsCompat.virtualFileRefToFile(
+            (ScalapropsNativeTest / nativeLink).value,
+            fileConverter.value
+          )
           runTest(binary, Nil)
         },
         testOnly := {
@@ -134,7 +142,10 @@ object ScalapropsNativePlugin extends AutoPlugin {
           Def.inputTaskDyn {
             val (selected, frameworkOptions) = parser.parsed
             Def.task {
-              val binary = (ScalapropsNativeTest / nativeLink).value
+              val binary = ScalapropsCompat.virtualFileRefToFile(
+                (ScalapropsNativeTest / nativeLink).value,
+                fileConverter.value
+              )
               runTest(binary, selected ++ frameworkOptions)
             }
           }

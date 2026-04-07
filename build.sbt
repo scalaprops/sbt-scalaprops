@@ -18,20 +18,7 @@ scalapropsSettings
 
 crossScalaVersions += "3.8.2"
 
-libraryDependencies ++= {
-  scalaBinaryVersion.value match {
-    case "3" =>
-      Nil
-    case _ =>
-      Seq(
-        Defaults.sbtPluginExtra(
-          m = "org.scala-native" % "sbt-scala-native" % nativeVersion % "provided",
-          sbtV = (pluginCrossBuild / sbtBinaryVersion).value,
-          scalaV = (pluginCrossBuild / scalaBinaryVersion).value
-        )
-      )
-  }
-}
+addSbtPlugin("org.scala-native" % "sbt-scala-native" % nativeVersion % "provided")
 
 scalapropsVersion := "0.10.0"
 
