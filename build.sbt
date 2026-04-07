@@ -131,6 +131,7 @@ scalacOptions ++= {
       Nil
     case _ =>
       Seq(
+        "-release:8",
         "-language:higherKinds",
         "-Xlint",
       )
