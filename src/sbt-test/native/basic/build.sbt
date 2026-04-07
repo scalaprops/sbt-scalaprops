@@ -5,8 +5,8 @@ enablePlugins(ScalaNativePlugin)
 name := "sbt-scalaprops-native-test1"
 
 libraryDependencies ++= Seq(
-  "com.github.scalaprops" %%% "scalaprops" % scalapropsVersion.value % "test",
-  "com.github.scalaprops" %%% "scalaprops-scalaz" % scalapropsVersion.value % "test",
+  "com.github.scalaprops" %% "scalaprops" % scalapropsVersion.value % "test",
+  "com.github.scalaprops" %% "scalaprops-scalaz" % scalapropsVersion.value % "test",
 )
 
 scalapropsNativeSettings
@@ -23,3 +23,5 @@ scalacOptions ++= Seq(
   "-language:higherKinds",
   "-language:implicitConversions",
 )
+
+evictionErrorLevel := Level.Warn
