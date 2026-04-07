@@ -4,12 +4,8 @@ import sbtrelease.Git
 
 object UpdateReadme {
 
-  private[this] val sonatypeURL = "https://oss.sonatype.org/service/local/repositories/"
-
   val updateReadmeTask = { (state: State) =>
     val extracted = Project.extract(state)
-    val scalaV = "2.12"
-    val sbtV = "1.0"
     val v = extracted get version
     val org = extracted get organization
     val n = extracted get name
@@ -23,8 +19,6 @@ object UpdateReadme {
         val matchReleaseOrSnapshot = line.contains("SNAPSHOT") == v.contains("SNAPSHOT")
         if (line.startsWith("addSbtPlugin") && matchReleaseOrSnapshot) {
           s"""addSbtPlugin("${org}" % "${n}" % "$v")"""
-        } else if (line.contains(sonatypeURL) && matchReleaseOrSnapshot) {
-          s"- [API Documentation](${sonatypeURL}${snapshotOrRelease}/archive/${org.replace('.', '/')}/${n}_${scalaV}_${sbtV}/${v}/${n}-${v}-javadoc.jar/!/scalaprops/index.html)"
         } else line
       }
       .mkString("", "\n", "\n")
