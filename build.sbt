@@ -1,6 +1,8 @@
 import sbtrelease._
 import ReleaseStateTransformations._
 
+def sbt2 = "2.0.0-RC11"
+
 scriptedBatchExecution := false
 
 publishTo := (if (isSnapshot.value) None else localStaging.value)
@@ -16,7 +18,7 @@ val tagOrHash = Def.setting {
 
 scalapropsSettings
 
-crossScalaVersions += "3.8.2"
+crossScalaVersions += scala_version_from_sbt_version.ScalaVersionFromSbtVersion(sbt2)
 
 addSbtPlugin("org.scala-native" % "sbt-scala-native" % nativeVersion % "provided")
 
@@ -27,7 +29,7 @@ pluginCrossBuild / sbtVersion := {
     case "2.12" =>
       (pluginCrossBuild / sbtVersion).value
     case _ =>
-      "2.0.0-RC11"
+      sbt2
   }
 }
 
