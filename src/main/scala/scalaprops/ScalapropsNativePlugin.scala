@@ -128,7 +128,7 @@ object ScalapropsNativePlugin extends AutoPlugin with ScalapropsNativeCompat {
     inConfig(ScalapropsNativeTest)(ScalaNativePluginInternal.scalaNativeConfigSettings(testConfig = true)),
     inConfig(ScalapropsNativeTest)(scalapropsNativeTestSettings),
     inConfig(Test)(
-      Seq(
+      Def.settings(
         testFullKey := Def.uncached {
           val binary = ScalapropsCompat.virtualFileRefToFile(
             (ScalapropsNativeTest / nativeLink).value,
@@ -136,6 +136,8 @@ object ScalapropsNativePlugin extends AutoPlugin with ScalapropsNativeCompat {
           )
           runTest(binary, Nil)
         },
+        testTaskSetting,
+        testQuick := testFullKey.value,
         testOnly := {
           import sjsonnew.BasicJsonProtocol.*
           val parser = loadForParser(definedTestNames)((s, i) => Defaults.testOnlyParser(s, i getOrElse Nil))
