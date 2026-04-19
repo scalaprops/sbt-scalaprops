@@ -10,7 +10,7 @@ __powerful__ means not only test class names but also test method names and [par
 `project/scalaprops.sbt`
 
 ```scala
-addSbtPlugin("com.github.scalaprops" % "sbt-scalaprops" % "0.5.2")
+addSbtPlugin("com.github.scalaprops" % "sbt-scalaprops" % "0.5.3")
 ```
 
 #### JVM
