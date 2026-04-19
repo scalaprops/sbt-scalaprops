@@ -8,7 +8,7 @@ import scala.scalanative.sbtplugin.ScalaNativePluginInternal
 import scala.scalanative.sbtplugin.ScalaNativePlugin.autoImport.*
 import scalaprops.ScalapropsCompat.*
 
-object ScalapropsNativePlugin extends AutoPlugin {
+object ScalapropsNativePlugin extends AutoPlugin with ScalapropsNativeCompat {
 
   object autoImport {
     sealed abstract class WhenNotNativeEnv extends Product with Serializable
@@ -129,7 +129,7 @@ object ScalapropsNativePlugin extends AutoPlugin {
     inConfig(ScalapropsNativeTest)(scalapropsNativeTestSettings),
     inConfig(Test)(
       Seq(
-        test := {
+        testFullKey := Def.uncached {
           val binary = ScalapropsCompat.virtualFileRefToFile(
             (ScalapropsNativeTest / nativeLink).value,
             fileConverter.value
