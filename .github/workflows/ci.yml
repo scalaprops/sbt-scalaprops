@@ -30,7 +30,6 @@ jobs:
            scalafmtSbtCheck
            "+ scalafmtCheckAll"
            test
-           scripted
            "++ 3.x"
            test
            scriptedTestSbt2
