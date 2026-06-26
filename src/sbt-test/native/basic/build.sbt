@@ -18,8 +18,6 @@ crossScalaVersions := Seq("2.12.21", "2.13.18", "3.3.7")
 scalacOptions ++= Seq(
   "-deprecation",
   "-unchecked",
-  "-Xlint",
   "-language:existentials",
-  "-language:higherKinds",
   "-language:implicitConversions",
 )

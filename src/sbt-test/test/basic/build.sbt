@@ -15,9 +15,7 @@ TaskKey[Unit]("checkParallelExecution") := {
 scalacOptions ++= Seq(
   "-deprecation",
   "-unchecked",
-  "-Xlint",
   "-language:existentials",
-  "-language:higherKinds",
   "-language:implicitConversions",
 )
 
