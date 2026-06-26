@@ -14,5 +14,5 @@ private[scalaprops] object ScalapropsCompat {
   def virtualFileRefToFile(f: File, converter: FileConverter): File =
     f
 
-  def testResult: Unit = ()
+  val testResult: Unit = ()
 }
