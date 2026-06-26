@@ -1,7 +1,7 @@
 import sbtrelease._
 import ReleaseStateTransformations._
 
-def sbt2 = "2.0.0"
+def sbt1 = "1.12.13"
 
 scriptedBatchExecution := false
 
@@ -12,13 +12,13 @@ val tagName = Def.setting {
 }
 
 val tagOrHash = Def.setting {
-  if (isSnapshot.value) sys.process.Process("git rev-parse HEAD").lineStream_!.head
+  if (isSnapshot.value) sys.process.Process("git rev-parse HEAD").lazyLines_!.head
   else tagName.value
 }
 
 scalapropsSettings
 
-crossScalaVersions += scala_version_from_sbt_version.ScalaVersionFromSbtVersion(sbt2)
+crossScalaVersions += scala_version_from_sbt_version.ScalaVersionFromSbtVersion(sbt1)
 
 addSbtPlugin("org.scala-native" % "sbt-scala-native" % nativeVersion % "provided")
 
@@ -27,9 +27,9 @@ scalapropsVersion := "0.11.0"
 pluginCrossBuild / sbtVersion := {
   scalaBinaryVersion.value match {
     case "2.12" =>
+      sbt1
+    case "3" =>
       (pluginCrossBuild / sbtVersion).value
-    case _ =>
-      sbt2
   }
 }
 
@@ -60,7 +60,7 @@ scriptedBufferLog := false
 
 scriptedLaunchOpts ++= {
   val javaVmArgs = {
-    import scala.collection.JavaConverters._
+    import scala.jdk.CollectionConverters._
     java.lang.management.ManagementFactory.getRuntimeMXBean.getInputArguments.asScala.toList
   }
   javaVmArgs.filter(a => Seq("-Xmx", "-Xms", "-XX", "-Dsbt.log.noformat").exists(a.startsWith))

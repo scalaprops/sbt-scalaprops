@@ -17,15 +17,13 @@ object KeywordPlugin extends AutoPlugin {
     "then",
   )
 
-  def getScalaKeywords: Set[String] = {
-    val g = new scala.tools.nsc.Global(new scala.tools.nsc.Settings)
-    g.nme.keywords.map(_.toString)
-  } ++ scala3keywords
+  lazy val getScalaKeywords: Set[String] =
+    dotty.tools.dotc.core.StdNames.nme.keywords.map(_.toString).toSet ++ scala3keywords
 
   assert(getScalaKeywords.size == 55)
 
   def writeScalaKeywords(base: File, keywords: Set[String]): File = {
-    val init = keywords.toList.sortBy(identity).map(tn => '"' + tn + '"').mkString("Set(", ", ", ")")
+    val init = keywords.toList.sortBy(identity).map(tn => "\"" + tn + "\"").mkString("Set(", ", ", ")")
     val objectName = "ScalaKeywords"
     val packageName = "scalaprops"
     val keywordsSrc =
