@@ -113,7 +113,8 @@ object ScalapropsNativePlugin extends AutoPlugin with ScalapropsNativeCompat {
       )
 
   private[this] def runTest(binary: File, options: Seq[String]) = {
-    val exitCode = scala.sys.process.Process(binary.getAbsolutePath +: options, None).run(connectInput = true).exitValue
+    val exitCode =
+      scala.sys.process.Process(binary.getAbsolutePath +: options, None).run(connectInput = true).exitValue()
 
     if (exitCode != 0) {
       sys.error("Nonzero exit code: " + exitCode)

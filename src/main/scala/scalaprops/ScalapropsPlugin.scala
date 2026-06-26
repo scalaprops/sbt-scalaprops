@@ -44,7 +44,7 @@ object ScalapropsPlugin extends AutoPlugin {
     Parser
       .oneOf(Seq(Seed, MinSuccessful, MaxDiscarded, MinSize, MaxSize, Timeout))
       .*
-      .map(params => params.foldLeft(ScalapropsTest.Param.Default)(_ merge _))
+      .map(params => params.foldLeft(ScalapropsTest.Param.Default)(_.merge(_)))
 
   private[this] val defaultParser: Parser[ScalapropsTest] = {
     (
@@ -81,7 +81,7 @@ object ScalapropsPlugin extends AutoPlugin {
         }
       },
       scalapropsTestNames := {
-        scalapropsTestNames storeAs scalapropsTestNames triggeredBy (Test / compile)
+        scalapropsTestNames.storeAs(scalapropsTestNames).triggeredBy(Test / compile)
       }.value,
       testFrameworks += new TestFramework("scalaprops.ScalapropsFramework"),
       Test / parallelExecution := false,
@@ -165,7 +165,7 @@ object ScalapropsPlugin extends AutoPlugin {
     }
 
   private[this] def distinctParser(exs: Set[String]): Parser[Seq[String]] = {
-    val base = token(Space) ~> token(NotSpace examples exs)
+    val base = token(Space) ~> token(NotSpace.examples(exs))
     base.flatMap { ex =>
       val (_, notMatching) = exs.partition(GlobFilter(ex).accept)
       distinctParser(notMatching).map { result => ex +: result }
