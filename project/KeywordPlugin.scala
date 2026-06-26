@@ -5,8 +5,10 @@ import Keys.*
 object KeywordPlugin extends AutoPlugin {
   override val requires = plugins.JvmPlugin
 
-  lazy val scalaKeywords = TaskKey[Set[String]]("scala-keywords")
-  lazy val generateKeywords = TaskKey[File]("generateKeywords")
+  @transient
+  lazy val scalaKeywords = taskKey[Set[String]]("")
+  @transient
+  lazy val generateKeywords = taskKey[File]("")
 
   val scala3keywords = Set[String](
     "enum",
