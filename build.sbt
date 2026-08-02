@@ -80,9 +80,9 @@ name := "sbt-scalaprops"
 
 description := "sbt plugin for scalaprops"
 
-homepage := Some(url("https://github.com/scalaprops/sbt-scalaprops"))
+homepage := Some(uri("https://github.com/scalaprops/sbt-scalaprops"))
 
-licenses := Seq("MIT License" -> url("https://www.opensource.org/licenses/mit-license"))
+licenses := Seq("MIT License" -> uri("https://www.opensource.org/licenses/mit-license"))
 
 commands += Command.command("updateReadme")(UpdateReadme.updateReadmeTask)
 
