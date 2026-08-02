@@ -1,7 +1,7 @@
 import sbtrelease._
 import ReleaseStateTransformations._
 
-def sbt1 = "1.12.13"
+def sbt1 = "1.12.14"
 
 scriptedBatchExecution := false
 
