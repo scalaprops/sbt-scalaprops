@@ -43,7 +43,6 @@ TaskKey[Unit]("scriptedTestSbt2") := Def.taskDyn {
     }
     .toList
   val args = values.filter {
-    case ("native", _) => false
     case ("test", "basic") => false
     case _ => true
   }.collect { case (x1, x2) =>
