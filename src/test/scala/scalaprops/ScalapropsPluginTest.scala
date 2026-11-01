@@ -17,7 +17,7 @@ object ScalapropsPluginTest extends Scalaprops {
     method.invoke(obj, classes).asInstanceOf[Parser[ScalapropsPlugin.ScalapropsTest]]
   }
 
-  val parser = Property.forAll {
+  property("parser") = Property.forAll {
     val aaa = "com.example.AAA"
     val classes = Map(
       aaa -> Set("aa_xx_1", "aa_xx_2", "aa_yy"),

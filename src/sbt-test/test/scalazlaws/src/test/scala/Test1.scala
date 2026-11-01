@@ -27,7 +27,7 @@ object Test1 extends Scalaprops {
 
   }
 
-  val pointLaws = Properties.list(
+  property("pointLaws") = Properties.list(
     scalazlaws.equal.all[Point[Int]],
     scalazlaws.functor.all[Point]
   )

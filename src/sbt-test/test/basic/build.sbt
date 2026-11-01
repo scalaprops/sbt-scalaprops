@@ -27,7 +27,7 @@ TaskKey[Unit]("generateTest2") := {
 import scalaprops._
 
 object Test2 extends Scalaprops {
-  val x = Property.forAll {
+  property("x") = Property.forAll {
     Test1.write("test2-x.txt", "x")
     true
   }

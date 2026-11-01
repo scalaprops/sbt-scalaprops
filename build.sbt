@@ -20,9 +20,7 @@ scalapropsSettings
 
 crossScalaVersions += scala_version_from_sbt_version.ScalaVersionFromSbtVersion(sbt1)
 
-addSbtPlugin("org.scala-native" % "sbt-scala-native" % nativeVersion % "provided")
-
-scalapropsVersion := "0.11.1"
+scalapropsVersion := "0.12.0"
 
 pluginCrossBuild / sbtVersion := {
   scalaBinaryVersion.value match {

@@ -9,8 +9,6 @@ libraryDependencies ++= Seq(
   "com.github.scalaprops" %%% "scalaprops-scalaz" % scalapropsVersion.value % "test",
 )
 
-scalapropsNativeSettings
-
 scalapropsVersion := System.getProperty("scalaprops.version")
 
 crossScalaVersions := Seq("2.12.21", "2.13.18", "3.3.9")
