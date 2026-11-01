@@ -6,7 +6,7 @@ val scala212 = "2.12.21"
 
 scalaVersion := scala212
 
-crossScalaVersions := scala212 :: "2.13.18" :: "3.3.7" :: Nil
+crossScalaVersions := scala212 :: "2.13.18" :: "3.3.9" :: Nil
 
 TaskKey[Unit]("checkParallelExecution") := {
   assert((Test / parallelExecution).value == false)
