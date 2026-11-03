@@ -28,8 +28,7 @@ jobs:
     - run: sbt
            -v
            --server
-           scalafmtSbtCheck
-           "+ scalafmtCheckAll"
+           scalafmtCheckRepo
            "++ 2.x"
            test
            scripted
