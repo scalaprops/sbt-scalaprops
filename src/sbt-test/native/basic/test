@@ -9,8 +9,4 @@ $ exists target/scala-3.3.9/sbt-scalaprops-native-test1-test
 
 > + test
 
-# TODO
-# > set Test / selectMainClass := Some("false.if.else")
-# > test
-# $ exists target/scala-2.12/src_managed/test/false/if/else.scala
-# $ exec cat target/scala-2.12/src_managed/test/false/if/else.scala
+> + check
