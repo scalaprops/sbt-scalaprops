@@ -72,8 +72,15 @@ object ScalapropsPlugin extends AutoPlugin {
             val testNames = (Test / definedTestNames).value
             testNames.iterator.map { testName =>
               val testClass = Class.forName(testName, true, loader)
-              val testFields = method.invoke(instance, testClass).asInstanceOf[Array[String]]
-              testName -> testFields.toSet
+              val oldTestFields = method.invoke(instance, testClass).asInstanceOf[Array[String]]
+              val newTests = testClass.getMethods.collectFirst {
+                case m
+                    if (m.getName == "testNames") &&
+                      (m.getParameterCount == 0) &&
+                      (m.getReturnType == classOf[Array[String]]) =>
+                  m.invoke(instance).asInstanceOf[Array[String]]
+              }.toArray.flatten
+              testName -> (newTests ++ oldTestFields).toSet
             }.toMap
           case Left(e) =>
             streams.value.log.debug(runnerName + " could not found")
