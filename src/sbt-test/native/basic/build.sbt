@@ -30,3 +30,14 @@ scalacOptions ++= Seq(
   "-language:existentials",
   "-language:implicitConversions",
 )
+
+InputKey[Unit]("check") := {
+  val actual = (Test / definedTestNames).value.toSet
+  val expect = Set(
+    "yield.else.for",
+    "yield.do",
+    "com.example.Test1",
+    "com.example.EmptyTests",
+  )
+  assert(actual == expect, actual)
+}
