@@ -1,12 +1,5 @@
 > + test
-$ exists target/scala-2.12/sbt-scalaprops-native-test1-test
-
-$ exists target/scala-2.13/sbt-scalaprops-native-test1-test
-
-$ exists target/scala-3.3.9/sbt-scalaprops-native-test1-test
 
 > + testQuick
-
-> + test
 
 > + check
