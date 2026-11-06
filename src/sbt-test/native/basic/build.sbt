@@ -1,3 +1,5 @@
+import PluginTestCompat._
+
 scalapropsCoreSettings
 
 enablePlugins(ScalaNativePlugin)
@@ -32,6 +34,7 @@ scalacOptions ++= Seq(
 )
 
 InputKey[Unit]("check") := {
+  assert((crossTarget.value / "sbt-scalaprops-native-test1-test").isFile)
   val actual = (Test / definedTestNames).value.toSet
   val expect = Set(
     "yield.else.for",
