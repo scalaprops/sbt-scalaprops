@@ -46,3 +46,11 @@ object Test2 extends Scalaprops {
 """
   )
 }
+
+InputKey[Unit]("test3txtExists") := {
+  sbtBinaryVersion.value match {
+    case "1.0" =>
+      assert(file("test3.txt").isFile)
+    case "2" =>
+  }
+}

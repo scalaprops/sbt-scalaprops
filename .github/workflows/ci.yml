@@ -34,5 +34,5 @@ jobs:
            scripted
            "++ 3.x"
            test
-           scriptedTestSbt2
+           scripted
     - run: rm -rf "$HOME/.ivy2/local" || true

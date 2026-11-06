@@ -22,7 +22,7 @@ $ exists test1.txt
 $ delete test1.txt
 -$ exists test1.txt
 
-$ exists test3.txt
+> test3txtExists
 $ delete test3.txt
 -$ exists test3.txt
 
