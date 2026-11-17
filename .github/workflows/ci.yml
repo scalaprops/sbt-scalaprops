@@ -13,6 +13,7 @@ jobs:
       matrix:
         include:
           - java: 17
+          - java: 21
           - java: 25
     steps:
     - uses: actions/checkout@v7

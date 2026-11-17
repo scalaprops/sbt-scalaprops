@@ -12,11 +12,11 @@ import scalaprops.ScalapropsCompat.*
 
 object ScalapropsPlugin extends AutoPlugin {
 
-  private[this] val LongBasic = mapOrFail('-'.? ~ Digit.+) { case (neg, digits) =>
+  private val LongBasic = mapOrFail('-'.? ~ Digit.+) { case (neg, digits) =>
     (neg.toSeq ++ digits).mkString.toLong
   }
 
-  private[this] def param[A](
+  private def param[A](
     p: Parser[A],
     typeName: String
   ): (String, (ScalapropsTest.Param, A) => ScalapropsTest.Param) => Parser[ScalapropsTest.Param] = { (key, f) =>
@@ -24,29 +24,29 @@ object ScalapropsPlugin extends AutoPlugin {
       f(ScalapropsTest.Param.Default, x)
     }
   }
-  private[this] val long = param(LongBasic, "Long")
-  private[this] val uint = param(DefaultParsers.NatBasic, "Unsigned Int")
+  private val long = param(LongBasic, "Long")
+  private val uint = param(DefaultParsers.NatBasic, "Unsigned Int")
 
-  private[this] val Seed =
+  private val Seed =
     long("seed", (p, x) => p.copy(seed = Some(x)))
-  private[this] val MinSuccessful =
+  private val MinSuccessful =
     uint("minSuccessful", (p, x) => p.copy(minSuccessful = Some(x)))
-  private[this] val MaxDiscarded =
+  private val MaxDiscarded =
     uint("maxDiscarded", (p, x) => p.copy(maxDiscarded = Some(x)))
-  private[this] val MinSize =
+  private val MinSize =
     uint("minSize", (p, x) => p.copy(minSize = Some(x)))
-  private[this] val MaxSize =
+  private val MaxSize =
     uint("maxSize", (p, x) => p.copy(maxSize = Some(x)))
-  private[this] val Timeout =
+  private val Timeout =
     uint("timeout", (p, x) => p.copy(timeout = Some(x)))
 
-  private[this] val ParamsParser: Parser[ScalapropsTest.Param] =
+  private val ParamsParser: Parser[ScalapropsTest.Param] =
     Parser
       .oneOf(Seq(Seed, MinSuccessful, MaxDiscarded, MinSize, MaxSize, Timeout))
       .*
       .map(params => params.foldLeft(ScalapropsTest.Param.Default)(_.merge(_)))
 
-  private[this] val defaultParser: Parser[ScalapropsTest] = {
+  private val defaultParser: Parser[ScalapropsTest] = {
     (
       Space ~> token(StringBasic, _ => true) ~
         (Space ~> token(StringBasic, _ => true)).* ~
@@ -140,7 +140,7 @@ object ScalapropsPlugin extends AutoPlugin {
     }
   }
 
-  private[this] def createParser(tests: Map[String, Set[String]]): Parser[ScalapropsTest] = {
+  private def createParser(tests: Map[String, Set[String]]): Parser[ScalapropsTest] = {
     tests
       .filter(_._2.nonEmpty)
       .map { case (k, v) =>
@@ -156,7 +156,7 @@ object ScalapropsPlugin extends AutoPlugin {
       .getOrElse(defaultParser)
   }
 
-  private[this] def getSingletonInstance(objectName: String, loader: ClassLoader): Either[Throwable, Class[?]] =
+  private def getSingletonInstance(objectName: String, loader: ClassLoader): Either[Throwable, Class[?]] =
     try {
       Right(Class.forName(objectName + "$", true, loader))
     } catch {
@@ -164,7 +164,7 @@ object ScalapropsPlugin extends AutoPlugin {
         Left(e)
     }
 
-  private[this] def distinctParser(exs: Set[String]): Parser[Seq[String]] = {
+  private def distinctParser(exs: Set[String]): Parser[Seq[String]] = {
     val base = token(Space) ~> token(NotSpace.examples(exs))
     base.flatMap { ex =>
       val (_, notMatching) = exs.partition(GlobFilter(ex).accept)

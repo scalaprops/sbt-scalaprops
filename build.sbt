@@ -18,7 +18,8 @@ val tagOrHash = Def.setting {
 
 scalapropsSettings
 
-crossScalaVersions += scala_version_from_sbt_version.ScalaVersionFromSbtVersion(sbt1)
+scalaVersion := "3.9.0"
+crossScalaVersions := Seq("3.9.0", "2.12.21")
 
 scalapropsVersion := "0.12.0"
 
@@ -27,7 +28,7 @@ pluginCrossBuild / sbtVersion := {
     case "2.12" =>
       sbt1
     case "3" =>
-      (pluginCrossBuild / sbtVersion).value
+      "2.1.0"
   }
 }
 
@@ -110,6 +111,7 @@ scalacOptions ++= {
       Nil
     case _ =>
       Seq(
+        "-Xsource:3",
         "-release:8",
         "-language:higherKinds",
         "-Xlint",
