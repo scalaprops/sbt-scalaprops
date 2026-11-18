@@ -2,6 +2,7 @@ import sbtrelease._
 import ReleaseStateTransformations._
 
 def sbt1 = "1.13.1"
+def sbt2 = "2.1.0"
 
 scriptedBatchExecution := false
 
@@ -18,7 +19,8 @@ val tagOrHash = Def.setting {
 
 scalapropsSettings
 
-crossScalaVersions += scala_version_from_sbt_version.ScalaVersionFromSbtVersion(sbt1)
+scalaVersion := "3.9.0"
+crossScalaVersions := Seq("3.9.0", "2.12.21")
 
 scalapropsVersion := "0.12.0"
 
@@ -27,7 +29,7 @@ pluginCrossBuild / sbtVersion := {
     case "2.12" =>
       sbt1
     case "3" =>
-      (pluginCrossBuild / sbtVersion).value
+      sbt2
   }
 }
 
