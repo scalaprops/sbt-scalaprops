@@ -4,7 +4,7 @@ addSbtPlugin("com.github.sbt" % "sbt-release" % "1.6.0")
 addSbtPlugin("com.github.sbt" % "sbt-pgp" % "2.4.0")
 addSbtPlugin("com.eed3si9n" % "sbt-salad-days" % "0.2.0")
 libraryDependencies += "org.scala-sbt" %% "scripted-plugin" % sbtVersion.value
-addSbtPlugin("org.scala-native" % "sbt-scala-native" % "0.5.12")
+addSbtPlugin("org.scala-native" % "sbt-scala-native" % "0.5.13")
 Compile / unmanagedSourceDirectories ++= Seq("scala", "scala-3").map(
   baseDirectory.value.getParentFile / "src" / "main" / _
 )
