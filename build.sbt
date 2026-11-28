@@ -20,7 +20,7 @@ scalapropsSettings
 
 crossScalaVersions += scala_version_from_sbt_version.ScalaVersionFromSbtVersion(sbt1)
 
-scalapropsVersion := "0.12.0"
+scalapropsVersion := "0.12.1"
 
 pluginCrossBuild / sbtVersion := {
   scalaBinaryVersion.value match {
